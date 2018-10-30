@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        tools:context=".MainActivity">
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimaryDark"
+            app:menu="@menu/menu_home"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+                android:id="@+id/main_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextPrimary"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="MARKETS"
+                tools:layout_editor_absoluteY="15dp" tools:layout_editor_absoluteX="146dp"/>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+            android:id="@+id/main_frameLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+    </FrameLayout>
+
+    <View android:layout_width="0dp" android:layout_height="1dp"
+          android:background="@color/colorPrimary"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintBottom_toTopOf="@+id/main_navigation" android:id="@+id/view"/>
+
+    <android.support.design.widget.BottomNavigationView
+            android:id="@+id/main_navigation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:itemBackground="@color/colorPrimaryDark"
+            app:itemIconTint="@color/bottom_navigation_item"
+            app:itemTextColor="@color/bottom_navigation_item"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/navigation"/>
+
+
+</android.support.constraint.ConstraintLayout>

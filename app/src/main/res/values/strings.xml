@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CryptopiaService</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="balance">%s balance: %s</string>
+    <string name="amount">Amount(%s)</string>
+    <string name="total">Total(%s)</string>
+    <string name="price">Price(%s)</string>
+</resources>

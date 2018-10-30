@@ -1,0 +1,127 @@
+package com.example.pedro.myapplication.home
+
+import android.arch.lifecycle.Observer
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
+import android.view.*
+import android.widget.Toast
+import com.example.pedro.myapplication.*
+import com.example.pedro.myapplication.data.model.ApiReturn
+import com.example.pedro.myapplication.details.DetailsActivity
+import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.home_fragment.view.*
+import org.knowm.xchange.currency.CurrencyPair
+import org.koin.android.viewmodel.ext.android.viewModel
+
+class HomeFragment : Fragment() {
+
+    private lateinit var mAdapter: RecyclerAdapter
+    private val list = mutableListOf<ApiReturn>()
+    private var isSortedByChange = false
+
+    companion object {
+        fun newInstance() = HomeFragment()
+    }
+
+    private val mViewModel: HomeViewModel by viewModel()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.home_fragment, container, false)
+
+        (activity as MainActivity).toolbarTitle.text = "MARKET"
+        setHasOptionsMenu(true)
+
+        val recyclerView = view.home_recycler
+        mAdapter = RecyclerAdapter(list) { apiReturn ->
+            startActivity(context?.let { it1 -> DetailsActivity.newInstance(CurrencyPair(apiReturn.label), it1) })
+        }
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = mAdapter
+        }
+
+        view.home_chng_tv.setOnClickListener {
+            if (!isSortedByChange) {
+                list.sortBy { it.change }
+                mAdapter.notifyDataSetChanged()
+                isSortedByChange = true
+                view.home_chng_tv.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_keyboard_arrow_down), null)
+            } else {
+                list.sortByDescending { it.change }
+                mAdapter.notifyDataSetChanged()
+                view.home_chng_tv.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_keyboard_arrow_up), null)
+                isSortedByChange = false
+            }
+        }
+
+        return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mViewModel.getMarkets()
+        mViewModel.getState().observe(this, Observer {
+            it?.let {
+                handleState(it)
+            }
+        })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_home, menu)
+        val menuItem = menu?.findItem(R.id.action_search)
+        val search = menuItem?.actionView as SearchView
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onQueryTextChange(s: String?): Boolean {
+                if (s != null) {
+                    val newList = list.filter {
+                        it.label.toUpperCase().contains(s.toString().toUpperCase())
+                    }
+                    mAdapter.list = newList
+                    mAdapter.notifyDataSetChanged()
+                }
+                return true
+            }
+
+
+        })
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+    private fun handleState(viewState: ViewState<List<ApiReturn>>) {
+        when (viewState) {
+            is Success<List<ApiReturn>> -> handleSuccess(viewState.data)
+            is Failure -> handleError(viewState.error)
+            is Loading -> handleLoading()
+        }
+    }
+
+    private fun handleSuccess(data: List<ApiReturn>) {
+        home_loading.visibility = View.GONE
+        home_recycler.visibility = View.VISIBLE
+        list.clear()
+        list.addAll(data)
+        //list.sortBy { it.label }
+        mAdapter.notifyDataSetChanged()
+    }
+
+    private fun handleError(error: Throwable) {
+        error.printStackTrace()
+        Toast.makeText(activity, "Algum erro aconteceu", Toast.LENGTH_LONG).show()
+    }
+
+    private fun handleLoading() {
+        home_loading.visibility = View.VISIBLE
+        home_loading.speed = 1.5f
+        home_recycler.visibility = View.GONE
+    }
+
+
+}
