@@ -1,86 +1,103 @@
 package com.example.pedro.myapplication.data
 
-import android.content.SharedPreferences
+import android.arch.persistence.room.Room
+import android.content.Context
+import android.util.Log
+import com.example.pedro.myapplication.data.local.AppDatabase
 import com.example.pedro.myapplication.data.local.AppPreferences
-import com.example.pedro.myapplication.data.model.Api
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import org.knowm.xchange.Exchange
-import org.knowm.xchange.ExchangeFactory
-import org.knowm.xchange.cryptopia.CryptopiaExchange
-import org.knowm.xchange.currency.CurrencyPair
-import org.knowm.xchange.dto.meta.ExchangeMetaData
-import org.knowm.xchange.dto.trade.LimitOrder
-import org.knowm.xchange.service.account.AccountService
-import org.knowm.xchange.service.marketdata.MarketDataService
-import org.knowm.xchange.service.trade.TradeService
+import com.example.pedro.myapplication.data.local.dao.OpenOrdersDao
+import com.example.pedro.myapplication.data.model.ApiReturn
+import com.example.pedro.myapplication.data.model.Balance
+import com.example.pedro.myapplication.data.model.OpenOrder
+import com.example.pedro.myapplication.data.model.TradePair
+import com.example.pedro.myapplication.data.remote.RemoteRepository
+import com.example.pedro.myapplication.data.remote.exceptions.CryptopiaException
+import org.koin.android.ext.koin.androidApplication
 
-class CryptopiaRepositoty(private val sharedPreferences: AppPreferences) {
+class CryptopiaRepositoty(private val sharedPreferences: AppPreferences, appDatabase: AppDatabase) {
 
-    var mApiKey: String?
-    get() = sharedPreferences.apiKey
-    set(value) { sharedPreferences.apiKey = value }
-
-    var mSecretKey: String?
-        get() = sharedPreferences.secretKey
-        set(value) { sharedPreferences.secretKey = value }
-
-    private val exchange by lazy {
-        GlobalScope.async {
-
-            val exSpec = CryptopiaExchange().defaultExchangeSpecification.apply {
-                apiKey = mApiKey
-                secretKey = mSecretKey
-            }
-            ExchangeFactory.INSTANCE.createExchange(exSpec)
-
+    var apiKey: String?
+        get() = sharedPreferences.apiKey
+        set(value) {
+            sharedPreferences.apiKey = value
         }
+
+    var secretKey: String?
+        get() = sharedPreferences.secretKey
+        set(value) {
+            sharedPreferences.secretKey = value
+        }
+
+    private val remoteRepository by lazy {
+        RemoteRepository(apiKey, secretKey)
     }
 
-    private val cryptopiaService = CryptopiaService.getInstance()
+    private val openOrdersDao = appDatabase.openOdersDao()
 
-    suspend fun testKeys() {
-        exchange.await()
+
+    /*
+    @Return details of market
+     */
+    fun getMarket(label: String): DeferredApi<TradePair> {
+
+        return remoteRepository.getMarket(label)
     }
 
-    fun getBtcMarket(): Deferred<Api> {
-        return cryptopiaService.getBtcMarkets()
+    /*
+    @Return tradePair of btc market
+     */
+    fun getBtcMarket() = remoteRepository.getBtcMarket()
+
+    /*
+    @Return OPenOrders
+     */
+    fun getOpenOrders(): DeferredApiList<OpenOrder> {
+        return remoteRepository.getOpenOrders()
     }
 
-    suspend fun removeOrder(id: String) = exchange.tradeService {
-        cancelOrder(id)
+    /*
+     Save the OpenOrders in SQL
+     */
+    fun saveOrders(orders: List<OpenOrder>) {
+        openOrdersDao.removeAllOrders()
+        openOrdersDao.insert(orders)
     }
 
-    suspend fun getOpenOrders() = exchange.tradeService {
-        openOrders
+    /*
+     @Returns the OpenOrders in SQL
+     */
+    fun getOpenOrdersSql(): List<OpenOrder> {
+        return openOrdersDao.getAllOpenOrders()
     }
 
-    suspend fun getCurrencyDetails(currencyPair: CurrencyPair) = exchange.marketData {
-        getTicker(currencyPair)
+    /*
+     Test the secret and api keys
+     */
+    //TODO("melhorar o testkeys")
+    fun testKeys(apiKey: String, secretKey: String): DeferredApiList<Balance> {
+        return remoteRepository.testKeys(apiKey, secretKey)
     }
 
-    suspend fun getBalancePair(currencyPair: CurrencyPair) = exchange.accountService {
-        val baseBalance = accountInfo.wallet.getBalance(currencyPair.counter)
-        val counterBalance = accountInfo.wallet.getBalance(currencyPair.base)
-        Pair(baseBalance, counterBalance)
+    /*
+      Remove Open Order
+     */
+    fun removeOrder(id: Double): DeferredApiList<Unit> {
+        return remoteRepository.removeOrder(id)
     }
 
-    suspend fun placeLimitOrder(limitOrder: LimitOrder) = exchange.tradeService {
-        placeLimitOrder(limitOrder)
+    /*
+     @Returns the balance
+     */
+    fun getBalance(label: String): DeferredApiList<Balance> {
+        return remoteRepository.getBalance(label)
     }
 
-    private suspend fun <R> Deferred<Exchange>.tradeService(block: TradeService.() -> R) =
-        await().tradeService.block()
-
-    private suspend fun <R> Deferred<Exchange>.exchangeData(block: ExchangeMetaData.() -> R) =
-        await().exchangeMetaData.block()
-
-    private suspend fun <R> Deferred<Exchange>.marketData(block: MarketDataService.() -> R) =
-        await().marketDataService.block()
-
-    private suspend fun <R> Deferred<Exchange>.accountService(block: AccountService.() -> R) =
-        await().accountService.block()
-
+    /*
+       submit a trade
+     */
+    fun submitTrade(label: String, type: String, price: String, amount: String): DeferredApi<Unit> {
+        return remoteRepository.submitTrade(label, type, price, amount)
+    }
 }
+
 

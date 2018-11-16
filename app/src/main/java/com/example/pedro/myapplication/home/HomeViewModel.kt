@@ -2,15 +2,16 @@ package com.example.pedro.myapplication.home
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.util.Log
 import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.CryptopiaRepositoty
-import com.example.pedro.myapplication.data.model.ApiReturn
+import com.example.pedro.myapplication.data.model.TradePair
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 
 class HomeViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : ScopedViewModel() {
 
-    private val state = MutableLiveData<ViewState<List<ApiReturn>>>()
+    private val state = MutableLiveData<ViewState<List<TradePair>>>()
 
     fun getMarkets() {
         launch(IO) {
@@ -25,6 +26,6 @@ class HomeViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : Scop
         }
     }
 
-    fun getState() = state as LiveData<ViewState<List<ApiReturn>>>
+    fun getState() = state as LiveData<ViewState<List<TradePair>>>
 
 }

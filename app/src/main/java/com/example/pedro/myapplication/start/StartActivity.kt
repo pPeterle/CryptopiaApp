@@ -2,6 +2,7 @@ package com.example.pedro.myapplication.start
 
 import android.arch.lifecycle.Observer
 import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -20,6 +21,11 @@ class StartActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             mViewModel.setKeys(start_apikey_et.text.toString(), start_secretkey_et.text.toString())
+        }
+
+        start_link.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.cryptopia.co.nz/Security"))
+            startActivity(intent)
         }
 
         mViewModel.getState().observe(this, Observer {

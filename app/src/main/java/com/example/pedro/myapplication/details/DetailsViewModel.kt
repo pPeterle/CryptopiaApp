@@ -2,27 +2,18 @@ package com.example.pedro.myapplication.details
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import com.example.pedro.myapplication.Failure
-import com.example.pedro.myapplication.ScopedViewModel
-import com.example.pedro.myapplication.Success
-import com.example.pedro.myapplication.ViewState
+import android.util.Log
+import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.CryptopiaRepositoty
+import com.example.pedro.myapplication.data.model.TradePair
 import com.example.pedro.myapplication.data.model.TradePairDetails
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.knowm.xchange.currency.CurrencyPair
-import org.knowm.xchange.dto.Order
-import org.knowm.xchange.dto.account.Balance
-import org.knowm.xchange.dto.trade.LimitOrder
-import java.math.BigDecimal
-import java.util.*
 
 class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : ScopedViewModel() {
 
     private val state = MutableLiveData<ViewState<TradePairDetails>>()
-    lateinit var currencyPair: CurrencyPair
+    lateinit var tradePair: String
 
     fun setBuyOrder(orginalAmount: String, price: String) {
         if (orginalAmount.isEmpty()) {
@@ -34,27 +25,29 @@ class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : S
             return
         }
         launch(IO) {
+            state.postValue(Loading())
             try {
 
-                cryptopiaRepositoty.placeLimitOrder(
-                    LimitOrder(
-                        Order.OrderType.BID,
-                        BigDecimal(orginalAmount),
-                        currencyPair,
-                        currencyPair.counter.currencyCode,
-                        Date(),
-                        BigDecimal(price)
-                    )
-                )
+                val trade = cryptopiaRepositoty.submitTrade(
+                    tradePair,
+                    "Buy",
+                    price,
+                    orginalAmount
+                ).await()
+
+                if (trade.success) {
+                    getDetails()
+                } else {
+                    state.postValue(Failure(Error(trade.error)))
+                }
             } catch (error: Throwable) {
                 state.postValue(Failure(error))
             }
-
-            getDetails()
         }
     }
 
     fun setSellOrder(orginalAmount: String, price: String) {
+
         if (orginalAmount.isEmpty()) {
             state.postValue(Failure(Error("Amount is empty")))
             return
@@ -63,46 +56,66 @@ class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : S
             state.postValue(Failure(Error("Amount is empty")))
             return
         }
+
         launch(IO) {
+            state.postValue(Loading())
             try {
-                cryptopiaRepositoty.placeLimitOrder(
-                    LimitOrder(
-                        Order.OrderType.ASK,
-                        BigDecimal(orginalAmount),
-                        currencyPair,
-                        currencyPair.counter.currencyCode,
-                        Date(),
-                        BigDecimal(price)
-                    )
-                )
-                getDetails()
+                val trade = cryptopiaRepositoty.submitTrade(
+                    tradePair,
+                    "Sell",
+                    price,
+                    orginalAmount
+                ).await()
+
+                if (trade.success) {
+                    getDetails()
+                } else {
+                    state.postValue(Failure(Error(trade.error)))
+                }
             } catch (error: Throwable) {
                 state.postValue(Failure(error))
             }
-
         }
+
     }
 
     fun getDetails() {
-        launch {
-            withContext(IO) {
-                val balancePair = async { cryptopiaRepositoty.getBalancePair(currencyPair) }
-                val ticker = async { cryptopiaRepositoty.getCurrencyDetails(currencyPair) }
-                try {
+        launch(IO) {
+            val (symbol, baseSymbol) = tradePair.split("/")
 
+            try {
+
+                val balance = cryptopiaRepositoty.getBalance(symbol).await()
+                val balanceBase = cryptopiaRepositoty.getBalance(baseSymbol).await()
+                val tradePair = cryptopiaRepositoty.getMarket(tradePair).await().data
+
+
+                if (balance.success) {
                     state.postValue(
                         Success(
                             TradePairDetails(
-                                ticker.await().last.toPlainString(),
-                                balancePair.await().first.available.toFloat(),
-                                balancePair.await().second.available.toFloat()
+                                tradePair.lastPrice,
+                                balance.data[0].available,
+                                balanceBase.data[0].available
                             )
                         )
                     )
-                } catch (error: Throwable) {
-                    state.postValue(Failure(error))
+                } else {
+                    state.postValue(
+                        Success(
+                            TradePairDetails(
+                                tradePair.lastPrice,
+                                0.0,
+                                balanceBase.data[0].available
+                            )
+                        )
+                    )
                 }
+
+            } catch (error: Exception) {
+                state.postValue(Failure(error))
             }
+
 
         }
     }
@@ -126,4 +139,5 @@ class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : S
 
         return ""
     }
+
 }

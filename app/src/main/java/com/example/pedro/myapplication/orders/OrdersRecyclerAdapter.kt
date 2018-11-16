@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.pedro.myapplication.R
+import com.example.pedro.myapplication.data.model.OpenOrder
 import kotlinx.android.synthetic.main.orders_item.view.*
-import org.knowm.xchange.dto.trade.LimitOrder
 
-class OrdersRecyclerAdapter(var list: List<LimitOrder>, val onItemClick: (order: LimitOrder) -> Unit) :
+class OrdersRecyclerAdapter(var list: List<OpenOrder>, val onItemClick: (order: OpenOrder) -> Unit) :
     RecyclerView.Adapter<OrdersRecyclerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
@@ -22,15 +22,16 @@ class OrdersRecyclerAdapter(var list: List<LimitOrder>, val onItemClick: (order:
         holder.update(list.get(position))
     }
 
-    class MyViewHolder(val view: View, val onItemClick: (order: LimitOrder) -> Unit) : RecyclerView.ViewHolder(view) {
-        fun update(order: LimitOrder) {
+    class MyViewHolder(val view: View, val onItemClick: (order: OpenOrder) -> Unit) : RecyclerView.ViewHolder(view) {
+        fun update(order: OpenOrder) {
             view.run {
-                order_currencyBase.text = order.currencyPair.base.toString()
-                order_currencyCounter.text = order.currencyPair.counter.toString()
-                order_amount.text = order.originalAmount.toPlainString()
-                order_price.text = order.limitPrice.toPlainString()
-                order_total.text = String.format("%.8f", order.originalAmount.times(order.limitPrice).toFloat())
-                if (order.type.name == "BID") {
+                val (symbol, baseSymbol ) = order.market.split("/")
+                order_currencyBase.text = symbol
+                order_currencyCounter.text = baseSymbol
+                order_amount.text = order.amount.toString()
+                order_price.text = String.format("%.8f", order.rate)
+                order_total.text = String.format("%.8f", order.total)
+                if (order.type == "Buy") {
                     order_container.setBackgroundResource(R.drawable.order_bid)
                 } else {
                     order_container.setBackgroundResource(R.drawable.order_ask)

@@ -8,17 +8,16 @@ import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.Toast
 import com.example.pedro.myapplication.*
-import com.example.pedro.myapplication.data.model.ApiReturn
+import com.example.pedro.myapplication.data.model.TradePair
 import com.example.pedro.myapplication.details.DetailsActivity
 import kotlinx.android.synthetic.main.home_fragment.*
 import kotlinx.android.synthetic.main.home_fragment.view.*
-import org.knowm.xchange.currency.CurrencyPair
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
     private lateinit var mAdapter: RecyclerAdapter
-    private val list = mutableListOf<ApiReturn>()
+    private val list = mutableListOf<TradePair>()
     private var isSortedByChange = false
 
     companion object {
@@ -35,7 +34,7 @@ class HomeFragment : Fragment() {
 
         val recyclerView = view.home_recycler
         mAdapter = RecyclerAdapter(list) { apiReturn ->
-            startActivity(context?.let { it1 -> DetailsActivity.newInstance(CurrencyPair(apiReturn.label), it1) })
+            startActivity(DetailsActivity.newInstance(apiReturn.label, context!!))
         }
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -95,15 +94,15 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun handleState(viewState: ViewState<List<ApiReturn>>) {
+    private fun handleState(viewState: ViewState<List<TradePair>>) {
         when (viewState) {
-            is Success<List<ApiReturn>> -> handleSuccess(viewState.data)
+            is Success<List<TradePair>> -> handleSuccess(viewState.data)
             is Failure -> handleError(viewState.error)
             is Loading -> handleLoading()
         }
     }
 
-    private fun handleSuccess(data: List<ApiReturn>) {
+    private fun handleSuccess(data: List<TradePair>) {
         home_loading.visibility = View.GONE
         home_recycler.visibility = View.VISIBLE
         list.clear()
@@ -113,6 +112,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun handleError(error: Throwable) {
+        home_loading.visibility = View.GONE
         error.printStackTrace()
         Toast.makeText(activity, "Algum erro aconteceu", Toast.LENGTH_LONG).show()
     }

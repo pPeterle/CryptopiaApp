@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.pedro.myapplication.R
-import com.example.pedro.myapplication.data.model.ApiReturn
+import com.example.pedro.myapplication.data.model.TradePair
 import kotlinx.android.synthetic.main.item_recycler.view.*
 
-class RecyclerAdapter(var list: List<ApiReturn>, val onClick: (ApiReturn) -> Unit): RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
+class RecyclerAdapter(var list: List<TradePair>, val onClick: (TradePair) -> Unit): RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recycler, parent, false)
@@ -21,11 +21,11 @@ class RecyclerAdapter(var list: List<ApiReturn>, val onClick: (ApiReturn) -> Uni
         holder.update(list.get(position))
     }
 
-    class MyViewHolder(private val view: View, val onClick: (ApiReturn) -> Unit) : RecyclerView.ViewHolder(view) {
+    class MyViewHolder(private val view: View, val onClick: (TradePair) -> Unit) : RecyclerView.ViewHolder(view) {
 
-        fun update(apiReturn: ApiReturn) {
+        fun update(tradePair: TradePair) {
             view.item_change.apply {
-                /*if (currencyPair.second..change < 0) {
+                /*if (tradePair.second..change < 0) {
                     setTextColor(Color.RED)
                 } else if (data.change > 0) {
                     setTextColor(Color.GREEN)
@@ -33,12 +33,12 @@ class RecyclerAdapter(var list: List<ApiReturn>, val onClick: (ApiReturn) -> Uni
                     setTextColor(Color.WHITE)
                 }*/
             }
-            val (base, counter) = apiReturn.label.split("/")
+            val (base, counter) = tradePair.label.split("/")
             view.item_currencyBase.text = base
             view.item_currencyCounter.text = counter
-            view.item_lastPrice.text = String.format("%.8f",apiReturn.lastPrice)
+            view.item_lastPrice.text = String.format("%.8f",tradePair.lastPrice)
 
-            val change = apiReturn.change
+            val change = tradePair.change
             view.item_change.text = change.toString()
             if (change > 0) {
                 view.item_change.setBackgroundResource(R.drawable.btn_green)
@@ -49,7 +49,7 @@ class RecyclerAdapter(var list: List<ApiReturn>, val onClick: (ApiReturn) -> Uni
             }
 
             view.item_container.setOnClickListener {
-                onClick.invoke(apiReturn)
+                onClick.invoke(tradePair)
             }
         }
     }

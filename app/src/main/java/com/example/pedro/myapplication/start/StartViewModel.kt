@@ -6,15 +6,16 @@ import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.CryptopiaRepositoty
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
-class StartViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty): ScopedViewModel(), LifecycleObserver {
+class StartViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : ScopedViewModel(), LifecycleObserver {
 
     private val state = MutableLiveData<ViewState<Unit>>()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun verifyKeys() {
-        val apiKey = cryptopiaRepositoty.mApiKey
-        val secretKey = cryptopiaRepositoty.mSecretKey
+        val apiKey = cryptopiaRepositoty.apiKey
+        val secretKey = cryptopiaRepositoty.secretKey
         if (apiKey == null || apiKey.isEmpty() || secretKey == null || secretKey.isEmpty()) {
             state.value = Failure(Error("YOU NEED TO SET THE KEYS"))
         } else {
@@ -24,25 +25,34 @@ class StartViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty): Scop
 
     fun setKeys(apiKey: String, secretKey: String) {
         if (!apiKey.isEmpty() && !secretKey.isEmpty()) {
-            Log.i("test", "api key: $apiKey")
-            Log.i("test", "secretKey: $secretKey")
-            cryptopiaRepositoty.mApiKey = apiKey
-            cryptopiaRepositoty.mSecretKey = secretKey
-            testKeys()
+            testKeys(apiKey, secretKey)
         } else {
-            state.value = Failure(Error("Api Key or SecretKey EMPTY"))
+            state.value = Failure(Error("ApiReturn Key or SecretKey EMPTY"))
         }
     }
 
-    private fun testKeys() {
+    private fun testKeys(apiKey: String, secretKey: String) {
         launch(IO) {
+            state.postValue(Loading())
             try {
-                state.postValue(Loading())
-                cryptopiaRepositoty.testKeys()
-                state.postValue(Success(Unit))
-            } catch (error: Throwable) {
-                state.postValue(Failure(Error("Keys dont exist")))
+                val success = cryptopiaRepositoty.testKeys(apiKey, secretKey).await()
+                Log.i("test", "erro: ${success}")
+
+                if (success.success) {
+                    Log.i("test", "erro: ${success.data}")
+                    state.postValue(Success(Unit))
+                    cryptopiaRepositoty.apiKey = apiKey
+                    cryptopiaRepositoty.secretKey = secretKey
+                } else {
+
+                    state.postValue(Failure(Error("Chaves Erradas")))
+                }
+            } catch (e: HttpException) {
+                state.postValue(Failure(Error("Chaves Erradas")))
+            } catch (e: Throwable) {
+                state.postValue(Failure(Error("Algum error inesperado: $e")))
             }
+
         }
     }
 

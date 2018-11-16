@@ -11,16 +11,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.pedro.myapplication.*
+import com.example.pedro.myapplication.data.model.OpenOrder
 import kotlinx.android.synthetic.main.orders_fragment.*
-import org.knowm.xchange.dto.trade.LimitOrder
-import org.knowm.xchange.dto.trade.OpenOrders
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class OrdersFragment : Fragment() {
 
     private val mViewModel : OrdersViewModel by viewModel()
     private lateinit var mAdapter: OrdersRecyclerAdapter
-    private val list = mutableListOf<LimitOrder>()
+    private val list = mutableListOf<OpenOrder>()
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
@@ -34,9 +33,8 @@ class OrdersFragment : Fragment() {
 
         (activity as MainActivity).toolbarTitle.text = "ORDERS"
 
-        mAdapter = OrdersRecyclerAdapter(list) {limitOrder ->
-
-                mViewModel.removeOrder(limitOrder.id)
+        mAdapter = OrdersRecyclerAdapter(list) {order ->
+                mViewModel.removeOrder(order.orderId)
         }
         view.findViewById<RecyclerView>(R.id.orders_recycler).apply {
             adapter = mAdapter
@@ -63,26 +61,27 @@ class OrdersFragment : Fragment() {
         })
     }
 
-    private fun handleState(viewState: ViewState<OpenOrders>) {
+    private fun handleState(viewState: ViewStateList<OpenOrder>) {
         when (viewState) {
-            is Success<OpenOrders> -> handleSuccess(viewState.data)
+            is Success<List<OpenOrder>> -> handleSuccess(viewState.data)
             is Failure -> handleError(viewState.error)
             is Loading -> handleLoading()
         }
     }
 
-    private fun handleSuccess(data: OpenOrders) {
+    private fun handleSuccess(data: List<OpenOrder>) {
         order_loading.visibility = View.GONE
         orders_recycler.visibility = View.VISIBLE
 
         list.clear()
-        list.addAll(data.openOrders)
+        list.addAll(data)
         mAdapter.notifyDataSetChanged()
     }
 
     private fun handleError(error: Throwable) {
         error.printStackTrace()
-        Toast.makeText(activity, "Algum erro aconteceu", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, error.message, Toast.LENGTH_LONG).show()
+        order_loading.visibility = View.GONE
     }
 
     private fun handleLoading() {

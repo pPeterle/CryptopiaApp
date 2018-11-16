@@ -5,27 +5,27 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.model.TradePairDetails
 import com.example.pedro.myapplication.utils.onTextChanged
 import kotlinx.android.synthetic.main.activity_details.*
-import org.knowm.xchange.currency.CurrencyPair
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.math.BigDecimal
 
 class DetailsActivity : AppCompatActivity() {
     private val mViewModel: DetailsViewModel by viewModel()
 
-    private lateinit var currencyPair: CurrencyPair
+    private var tradePair: String? = null
 
     companion object {
 
         private const val CURRENCY_NAME = "currencyPair"
-        fun newInstance(currencyPair: CurrencyPair, context: Context): Intent {
+        fun newInstance(tradePair: String, context: Context): Intent {
             val intent = Intent(context, DetailsActivity::class.java)
-            intent.putExtra(CURRENCY_NAME, currencyPair)
+            intent.putExtra(CURRENCY_NAME, tradePair)
             return intent
         }
 
@@ -43,7 +43,7 @@ class DetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        currencyPair = intent?.extras?.get(CURRENCY_NAME) as CurrencyPair
+        tradePair = intent?.extras?.getString(CURRENCY_NAME)
 
         //details_coin_name.text = currencyPair.base.displayName
         setSupportActionBar(details_toolbar)
@@ -69,32 +69,20 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         details_btn_25.setOnClickListener {
-            val balance = details_base_amount_tv.text.toString()
-            val result = String.format("%.8f", BigDecimal(balance.toFloat() * 0.25).toFloat())
-            details_total_et.requestFocus()
-            details_total_et.setText(result)
+            updateTotal(0.25)
         }
 
         details_btn_50.setOnClickListener {
-            val balance = details_base_amount_tv.text.toString()
-            val result = String.format("%.8f", BigDecimal(balance.toFloat() * 0.5).toFloat())
-            details_total_et.requestFocus()
-            details_total_et.setText(result)
+            updateTotal(0.5)
         }
 
         details_btn_75.setOnClickListener {
-            val balance = details_base_amount_tv.text.toString()
-            val result = String.format("%.8f", BigDecimal(balance.toFloat() * 0.75).toFloat())
-            details_total_et.requestFocus()
-            details_total_et.setText(result)
+            updateTotal(0.75)
         }
 
         details_btn_100.setOnClickListener {
-            val balance = details_base_amount_tv.text.toString()
-            details_total_et.requestFocus()
-            details_total_et.setText(balance)
+            updateTotal(1.0)
         }
-
 
         details_buy_btn.setOnClickListener {
             mViewModel.setBuyOrder(
@@ -112,7 +100,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        mViewModel.currencyPair = currencyPair
+        mViewModel.tradePair = this.tradePair!!
         mViewModel.getDetails()
         mViewModel.getState().observe(this, Observer {
             it?.let {
@@ -122,13 +110,14 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun setupHint() {
-        details_counter_tv.text = currencyPair.counter.toString()
-        details_base_tv.text = currencyPair.base.toString()
+        val (symbol, baseSymbol) = tradePair!!.split("/")
+        details_counter_tv.text = baseSymbol
+        details_base_tv.text = symbol
 
-        details_amount_et.hint = String.format(resources.getString(R.string.amount), currencyPair.base)
-        details_total_et.hint = String.format(resources.getString(R.string.total), currencyPair.counter)
-        details_price_et.hint = String.format(resources.getString(R.string.price), currencyPair.counter)
-        details_currency_tv.text = currencyPair.toString()
+        details_amount_et.hint = String.format(resources.getString(R.string.amount), symbol)
+        details_total_et.hint = String.format(resources.getString(R.string.total), baseSymbol)
+        details_price_et.hint = String.format(resources.getString(R.string.price), baseSymbol)
+        details_currency_tv.text = tradePair
     }
 
     private fun handleState(viewState: ViewState<TradePairDetails>) {
@@ -144,20 +133,21 @@ class DetailsActivity : AppCompatActivity() {
 
         val avaibleBase = String.format(
             "%.8f",
-            data.baseBalance
+            data.baseAmount
         )
         val avaibleCounter = String.format(
             "%.8f",
-            data.counterBalance
+            data.counterAmount
         )
 
-        details_price_et.setText(data.lastPrice)
+        details_price_et.setText(String.format("%.8f", data.lastPrice))
         details_base_amount_tv.text = avaibleBase
         details_counter_amount_tv.text = avaibleCounter
     }
 
     private fun handleError(error: Throwable) {
         error.printStackTrace()
+        details_loading.visibility = View.GONE
         Toast.makeText(this, "${error.message}", Toast.LENGTH_LONG).show()
     }
 
@@ -165,5 +155,11 @@ class DetailsActivity : AppCompatActivity() {
         details_loading.visibility = View.VISIBLE
         details_loading.speed = 1.5f
     }
-}
 
+    private fun updateTotal(percent: Double) {
+        val balance = details_base_amount_tv.text.toString()
+        val result = String.format("%.8f", BigDecimal(balance.toFloat() * percent).toFloat())
+        details_total_et.requestFocus()
+        details_total_et.setText(result)
+    }
+}
