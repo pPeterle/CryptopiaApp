@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.pedro.myapplication.R
 import com.example.pedro.myapplication.data.model.TradePair
-import kotlinx.android.synthetic.main.item_recycler.view.*
+import kotlinx.android.synthetic.main.item_currency.view.*
 
 class RecyclerAdapter(var list: List<TradePair>, val onClick: (TradePair) -> Unit): RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recycler, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_currency, parent, false)
         return MyViewHolder(view, onClick)
     }
 

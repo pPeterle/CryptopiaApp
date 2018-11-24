@@ -30,8 +30,6 @@ class OrdersViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : Sc
                         throw CryptopiaException(error)
                 }
 
-            } catch (e: CryptopiaException) {
-                state.postValue(Failure(e))
             } catch (e: Throwable) {
                 state.postValue(Failure(e))
             }
@@ -47,7 +45,7 @@ class OrdersViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : Sc
                 if (r.success) {
                     getOpenOrders()
                 } else {
-                    state.postValue(Failure(Error(r.error)))
+                    state.postValue(Failure(CryptopiaException(r.error)))
                 }
 
             } catch (e: RuntimeException) {

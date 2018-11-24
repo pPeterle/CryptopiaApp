@@ -44,9 +44,9 @@
     </FrameLayout>
 
     <View android:layout_width="0dp" android:layout_height="1dp"
-          android:background="@color/colorPrimary"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
+          style="@style/DividerTheme"
           app:layout_constraintBottom_toTopOf="@+id/main_navigation" android:id="@+id/view"/>
 
     <android.support.design.widget.BottomNavigationView

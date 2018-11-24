@@ -14,6 +14,8 @@ import com.example.pedro.myapplication.utils.onTextChanged
 import kotlinx.android.synthetic.main.activity_details.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DetailsActivity : AppCompatActivity() {
     private val mViewModel: DetailsViewModel by viewModel()
@@ -143,6 +145,14 @@ class DetailsActivity : AppCompatActivity() {
         details_price_et.setText(String.format("%.8f", data.lastPrice))
         details_base_amount_tv.text = avaibleBase
         details_counter_amount_tv.text = avaibleCounter
+
+        //val candleData = mutableListOf<CandleData>()
+
+        /*data.marketHistory.forEach {
+            SimpleDateFormat()
+            Log.i("test", "handleSuccess: ${Calendar.getInstance().time}")
+        }*/
+        Log.i("test", "handleSuccess: ${data.marketHistory.size}")
     }
 
     private fun handleError(error: Throwable) {

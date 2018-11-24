@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.model.OpenOrder
-import kotlinx.android.synthetic.main.orders_fragment.*
+import kotlinx.android.synthetic.main.fragment_orders.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class OrdersFragment : Fragment() {
@@ -29,7 +29,7 @@ class OrdersFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.orders_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_orders, container, false)
 
         (activity as MainActivity).toolbarTitle.text = "ORDERS"
 

@@ -11,7 +11,9 @@ fun EditText.onTextChanged(block: (s: String) -> Unit) {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            block(s.toString())
+            s?.let {
+                block(s.toString())
+            }
         }
     })
 }

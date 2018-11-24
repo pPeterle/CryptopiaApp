@@ -10,9 +10,11 @@ import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.TaskStackBuilder
+import android.util.Log
 import com.example.pedro.myapplication.MainActivity
 import com.example.pedro.myapplication.R
 import com.example.pedro.myapplication.data.CryptopiaRepositoty
+import com.example.pedro.myapplication.data.model.OpenOrder
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -33,19 +35,17 @@ class OpenTradersWork : BroadcastReceiver(), KoinComponent {
                     if (apiReturn.success && apiReturn.data.size < ordersLocal.size) {
                         ordersLocal.removeAll(apiReturn.data)
                         ordersLocal.forEach {
-                            buildNotofication(context!!, it.market)
+                            buildNotofication(context!!, it)
                         }
-                        cryptopiaRepositoty.saveOrders(apiReturn.data)
-                    } else {
                     }
+                    cryptopiaRepositoty.saveOrders(apiReturn.data)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
         }
     }
 
-    private fun buildNotofication(context: Context, message: String) {
+    private fun buildNotofication(context: Context, order: OpenOrder) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -65,8 +65,8 @@ class OpenTradersWork : BroadcastReceiver(), KoinComponent {
 
         val builder = NotificationCompat.Builder(context, "my_channel_01")
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("NOTIFICACAO")
-            .setContentText(message)
+            .setContentTitle("ORDEM ATIVADA")
+            .setContentText(order.market)
 
         val resultIntent = Intent(context, MainActivity::class.java)
         val stackBuilder = TaskStackBuilder.create(context)
@@ -76,7 +76,7 @@ class OpenTradersWork : BroadcastReceiver(), KoinComponent {
 
         builder.setContentIntent(resultPendingIntent)
 
-        notificationManager.notify(12, builder.build())
+        notificationManager.notify(order.orderId.toInt(), builder.build())
 
     }
 }

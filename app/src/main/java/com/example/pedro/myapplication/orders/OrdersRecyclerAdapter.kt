@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.pedro.myapplication.R
 import com.example.pedro.myapplication.data.model.OpenOrder
-import kotlinx.android.synthetic.main.orders_item.view.*
+import kotlinx.android.synthetic.main.item_order.view.*
 
 class OrdersRecyclerAdapter(var list: List<OpenOrder>, val onItemClick: (order: OpenOrder) -> Unit) :
     RecyclerView.Adapter<OrdersRecyclerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.orders_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_order, parent, false)
         return MyViewHolder(view, onItemClick)
     }
 

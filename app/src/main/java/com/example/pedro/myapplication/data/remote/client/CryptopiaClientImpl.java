@@ -1,7 +1,7 @@
 package com.example.pedro.myapplication.data.remote.client;
 
-import com.example.pedro.myapplication.data.remote.constants.ApiConstants;
 import com.example.pedro.myapplication.data.remote.exceptions.CryptopiaException;
+import com.example.pedro.myapplication.utils.ApiConstants;
 import com.google.gson.JsonObject;
 
 import javax.crypto.Mac;
@@ -69,7 +69,7 @@ public class CryptopiaClientImpl {
     }
 
     @Override
-    public Balance getBalance(String currency) {
+    public Balance getBalanceByLabel(String currency) {
 
         try {
             JsonObject params = new JsonObject();

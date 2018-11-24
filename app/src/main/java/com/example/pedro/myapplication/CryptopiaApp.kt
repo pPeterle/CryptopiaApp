@@ -14,12 +14,12 @@ class CryptopiaApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        startKoin(this, listOf(myModule))
+
         val alarmReceiver = Intent(this, OpenTradersWork::class.java)
         val pendinIntent = PendingIntent.getBroadcast(this, 0, alarmReceiver, 0)
         val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 900000, pendinIntent)
-
-        startKoin(this, listOf(myModule))
 
     }
 }

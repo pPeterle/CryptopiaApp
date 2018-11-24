@@ -9,6 +9,7 @@ import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import com.example.pedro.myapplication.balance.BalanceFragment
 import com.example.pedro.myapplication.data.worker.OpenTradersWork
 import com.example.pedro.myapplication.home.HomeFragment
 import com.example.pedro.myapplication.orders.OrdersFragment
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity(), FragNavController.RootFragmentListener
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         navController = FragNavController.newBuilder(savedInstanceState, supportFragmentManager, R.id.main_frameLayout)
-            .rootFragments(mutableListOf(HomeFragment.newInstance(), OrdersFragment.newInstance()))
+            .rootFragments(mutableListOf(HomeFragment.newInstance(), OrdersFragment.newInstance(), BalanceFragment.newInstance()))
             .defaultTransactionOptions(FragNavTransactionOptions.newBuilder().build())
             .build()
 
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity(), FragNavController.RootFragmentListener
 
                 }
                 R.id.navigation_notifications -> {
+                    navController.switchTab(FragNavController.TAB3)
                     return@setOnNavigationItemSelectedListener true
                 }
             }
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity(), FragNavController.RootFragmentListener
         when (fragmentId) {
             FragNavController.TAB1 -> HomeFragment.newInstance()
             FragNavController.TAB2 -> OrdersFragment.newInstance()
+            FragNavController.TAB3 -> BalanceFragment.newInstance()
             else -> throw RuntimeException("Fragment do not added")
         }
 

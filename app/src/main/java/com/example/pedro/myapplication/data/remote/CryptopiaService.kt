@@ -1,10 +1,7 @@
-package com.example.pedro.myapplication.data
+package com.example.pedro.myapplication.data.remote
 
-import com.example.pedro.myapplication.data.model.ApiReturn
-import com.example.pedro.myapplication.data.model.Balance
-import com.example.pedro.myapplication.data.model.OpenOrder
-import com.example.pedro.myapplication.data.model.TradePair
-import com.example.pedro.myapplication.data.remote.constants.ApiConstants
+import com.example.pedro.myapplication.data.model.*
+import com.example.pedro.myapplication.utils.ApiConstants
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
@@ -20,31 +17,49 @@ typealias DeferredApi<T> = Deferred<ApiReturn<T>>
 
 interface CryptopiaService {
 
-    @GET("GetMarkets/BTC")
+    @GET("$Markets/BTC")
     fun getBtcMarkets(): DeferredApiList<TradePair>
 
-    @GET("GetMarket/{id}")
+    @GET("$Market/{id}")
     fun getMarket(@Path("id") tradePair: String): DeferredApi<TradePair>
 
-    @POST("GetBalance")
+    @GET("$MarketHistory/{market}/{hours}")
+    fun getMarketHistory(@Path("market") market: String ,@Path("hours") hours: Int): DeferredApiList<MarketHistory>
+
+    @POST(Balance)
     fun getBalance(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<Balance>
 
-    @POST("GetOpenOrders")
+    @POST(OpenOrders)
     fun getOpenOrders(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<OpenOrder>
 
-    @POST("CancelTrade")
+    @POST(CancelTrade)
     fun cancelTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<Unit>
 
-    @POST("SubmitTrade")
+    @POST(SubmitTrade)
     fun submitTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApi<Unit>
 
+
+    //TODO("testar networkInterceptor")
     companion object {
+
+        const val Markets = "GetMarkets"
+        const val Market = "GetMarket"
+        const val MarketHistory = "GetMarketHistory"
+        const val Balance = "GetBalance"
+        const val OpenOrders = "GetOpenOrders"
+        const val CancelTrade = "CancelTrade"
+        const val SubmitTrade = "SubmitTrade"
+
         fun getInstance(): CryptopiaService {
             val logging = HttpLoggingInterceptor()
             logging.level = HttpLoggingInterceptor.Level.BASIC
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(logging)
+                /*.addNetworkInterceptor{
+                    Log.i("test", "networkInteceptor: erro de internet")
+                    it.proceed(it.request())
+                }*/
                 .build()
 
             val retrofit = Retrofit.Builder()

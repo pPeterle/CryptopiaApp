@@ -10,15 +10,14 @@ import android.widget.Toast
 import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.model.TradePair
 import com.example.pedro.myapplication.details.DetailsActivity
-import kotlinx.android.synthetic.main.home_fragment.*
-import kotlinx.android.synthetic.main.home_fragment.view.*
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
     private lateinit var mAdapter: RecyclerAdapter
-    private val list = mutableListOf<TradePair>()
-    private var isSortedByChange = false
+    private var list = mutableListOf<TradePair>()
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -27,7 +26,7 @@ class HomeFragment : Fragment() {
     private val mViewModel: HomeViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.home_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         (activity as MainActivity).toolbarTitle.text = "MARKET"
         setHasOptionsMenu(true)
@@ -42,16 +41,14 @@ class HomeFragment : Fragment() {
         }
 
         view.home_chng_tv.setOnClickListener {
-            if (!isSortedByChange) {
+            if (view.home_chng_tv.isChecked) {
                 list.sortBy { it.change }
                 mAdapter.notifyDataSetChanged()
-                isSortedByChange = true
                 view.home_chng_tv.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_keyboard_arrow_down), null)
             } else {
                 list.sortByDescending { it.change }
                 mAdapter.notifyDataSetChanged()
                 view.home_chng_tv.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_keyboard_arrow_up), null)
-                isSortedByChange = false
             }
         }
 
@@ -62,9 +59,7 @@ class HomeFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         mViewModel.getMarkets()
         mViewModel.getState().observe(this, Observer {
-            it?.let {
-                handleState(it)
-            }
+            it?.let { handleState(it) }
         })
     }
 
@@ -73,8 +68,9 @@ class HomeFragment : Fragment() {
         val menuItem = menu?.findItem(R.id.action_search)
         val search = menuItem?.actionView as SearchView
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            override fun onQueryTextSubmit(s: String?): Boolean {
+                search.clearFocus()
+                return true
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
@@ -107,7 +103,6 @@ class HomeFragment : Fragment() {
         home_recycler.visibility = View.VISIBLE
         list.clear()
         list.addAll(data)
-        //list.sortBy { it.label }
         mAdapter.notifyDataSetChanged()
     }
 

@@ -1,15 +1,13 @@
 package com.example.pedro.myapplication.data.remote
 
 import android.util.Base64
-import com.example.pedro.myapplication.data.CryptopiaService
-import com.example.pedro.myapplication.data.DeferredApi
-import com.example.pedro.myapplication.data.DeferredApiList
 import com.example.pedro.myapplication.data.model.Balance
+import com.example.pedro.myapplication.data.model.MarketHistory
 import com.example.pedro.myapplication.data.model.OpenOrder
 import com.example.pedro.myapplication.data.model.TradePair
 import com.example.pedro.myapplication.data.remote.client.CryptopiaClientImpl
 import com.example.pedro.myapplication.data.remote.exceptions.CryptopiaException
-import com.example.pedro.myapplication.data.remote.constants.ApiConstants
+import com.example.pedro.myapplication.utils.ApiConstants
 import com.google.gson.JsonObject
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -45,7 +43,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?) {
 
         return cryptopiaService.getOpenOrders(
             getAuthString(
-                "GetOpenOrders",
+                CryptopiaService.OpenOrders,
                 params
             ), requestBody
         )
@@ -62,7 +60,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?) {
 
         return cryptopiaService.getBalance(
             cr.getAuthString(
-                "GetBalance",
+                CryptopiaService.Balance,
                 params
             ), requestBody
         )
@@ -79,21 +77,36 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?) {
         val requestBody = buildRequestBody(params)
         return cryptopiaService.cancelTrade(
             getAuthString(
-                "CancelTrade",
+                CryptopiaService.CancelTrade,
                 params
             ), requestBody
         )
     }
 
-    fun getBalance(label: String): DeferredApiList<Balance> {
+    fun getBalanceByLabel(label: String): DeferredApiList<Balance> {
 
         val params = buildJsonObject {
             addProperty("Currency", label)
         }
 
         val requestBody = buildRequestBody(params)
-        return cryptopiaService.getBalance(getAuthString("GetBalance", params), requestBody)
+        return cryptopiaService.getBalance(getAuthString(CryptopiaService.Balance, params), requestBody)
 
+    }
+
+    fun getAllBalances(): DeferredApiList<Balance> {
+        val params = buildJsonObject {
+            val label: String? = null
+            addProperty("Currency", label)
+        }
+
+        val requestBody = buildRequestBody(params)
+        return cryptopiaService.getBalance(getAuthString(CryptopiaService.Balance, params), requestBody)
+    }
+
+    fun getMarketHistory(label: String, hours: Int): DeferredApiList<MarketHistory> {
+        val (symbol, baseSymbol) = label.split("/")
+        return cryptopiaService.getMarketHistory("${symbol}_${baseSymbol}", hours)
     }
 
     fun submitTrade(label: String, type: String, price: String, amount: String): DeferredApi<Unit> {
@@ -105,7 +118,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?) {
         }
 
         val requestBody = buildRequestBody(params)
-        return cryptopiaService.submitTrade(getAuthString("SubmitTrade", params), requestBody)
+        return cryptopiaService.submitTrade(getAuthString(CryptopiaService.SubmitTrade, params), requestBody)
     }
 
     private fun buildJsonObject(block: JsonObject.() -> Unit): JsonObject {

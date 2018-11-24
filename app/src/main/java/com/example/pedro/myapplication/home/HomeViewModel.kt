@@ -6,6 +6,7 @@ import android.util.Log
 import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.CryptopiaRepositoty
 import com.example.pedro.myapplication.data.model.TradePair
+import com.example.pedro.myapplication.data.remote.exceptions.CryptopiaException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 
@@ -19,7 +20,10 @@ class HomeViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : Scop
 
             try {
                 val apiReturn = cryptopiaRepositoty.getBtcMarket().await()
-                state.postValue(Success(apiReturn.data))
+                if (apiReturn.success) {
+                    state.postValue(Success(apiReturn.data))
+                } else
+                    throw CryptopiaException(apiReturn.error)
             } catch (e: Exception) {
                 state.postValue(Failure(e))
             }

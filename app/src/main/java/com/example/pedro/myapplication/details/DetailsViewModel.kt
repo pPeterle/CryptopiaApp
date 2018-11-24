@@ -2,10 +2,8 @@ package com.example.pedro.myapplication.details
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.example.pedro.myapplication.*
 import com.example.pedro.myapplication.data.CryptopiaRepositoty
-import com.example.pedro.myapplication.data.model.TradePair
 import com.example.pedro.myapplication.data.model.TradePairDetails
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -21,7 +19,7 @@ class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : S
             return
         }
         if (price.isEmpty()) {
-            state.postValue(Failure(Error("Amount is empty")))
+            state.postValue(Failure(Error("Price is empty")))
             return
         }
         launch(IO) {
@@ -53,7 +51,7 @@ class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : S
             return
         }
         if (price.isEmpty()) {
-            state.postValue(Failure(Error("Amount is empty")))
+            state.postValue(Failure(Error("Price is empty")))
             return
         }
 
@@ -79,24 +77,27 @@ class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : S
 
     }
 
+    //TODO("melhorar esse metodo")
     fun getDetails() {
         launch(IO) {
             val (symbol, baseSymbol) = tradePair.split("/")
 
             try {
 
-                val balance = cryptopiaRepositoty.getBalance(symbol).await()
-                val balanceBase = cryptopiaRepositoty.getBalance(baseSymbol).await()
-                val tradePair = cryptopiaRepositoty.getMarket(tradePair).await().data
+                val balance = cryptopiaRepositoty.getBalance(symbol)
+                val balanceBase = cryptopiaRepositoty.getBalance(baseSymbol)
+                val marketDetails = cryptopiaRepositoty.getMarket(tradePair)
+                val marketHistory = cryptopiaRepositoty.getMarketHistory(tradePair)
 
 
-                if (balance.success) {
+                if (balance.await().success) {
                     state.postValue(
                         Success(
                             TradePairDetails(
-                                tradePair.lastPrice,
-                                balance.data[0].available,
-                                balanceBase.data[0].available
+                                marketDetails.await().data.lastPrice,
+                                balance.await().data[0].available,
+                                balanceBase.await().data[0].available,
+                                marketHistory.await().data
                             )
                         )
                     )
@@ -104,9 +105,10 @@ class DetailsViewModel(private val cryptopiaRepositoty: CryptopiaRepositoty) : S
                     state.postValue(
                         Success(
                             TradePairDetails(
-                                tradePair.lastPrice,
+                                marketDetails.await().data.lastPrice,
                                 0.0,
-                                balanceBase.data[0].available
+                                balanceBase.await().data[0].available,
+                                marketHistory.await().data
                             )
                         )
                     )

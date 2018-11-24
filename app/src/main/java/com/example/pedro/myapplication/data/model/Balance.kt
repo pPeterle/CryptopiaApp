@@ -7,5 +7,6 @@ data class Balance(
     @SerializedName("Symbol") val symbol: String,
     @SerializedName("Available") val available: Double,
     @SerializedName("Total") val total: Double,
-    @SerializedName("HeldForTrades") val heldForTrades: Double
+    @SerializedName("HeldForTrades") val heldForTrades: Double,
+    var btcValue: Double = 0.0
 )
