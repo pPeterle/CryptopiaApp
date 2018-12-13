@@ -11,41 +11,60 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.TaskStackBuilder
 import android.util.Log
-import com.example.pedro.myapplication.MainActivity
+import com.example.pedro.myapplication.ui.activity.MainActivity
 import com.example.pedro.myapplication.R
-import com.example.pedro.myapplication.data.CryptopiaRepositoty
-import com.example.pedro.myapplication.data.model.OpenOrder
+import com.example.pedro.myapplication.data.CryptopiaRepository
+import com.example.pedro.myapplication.data.remote.exceptions.NoConnectivityException
+import com.example.pedro.myapplication.utils.toFormattedString
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
+import kotlin.random.Random
 
 
 class OpenTradersWork : BroadcastReceiver(), KoinComponent {
 
-    private val cryptopiaRepositoty: CryptopiaRepositoty by inject()
+    private val cryptopiaRepository: CryptopiaRepository by inject()
 
     override fun onReceive(context: Context?, intent: Intent?) {
         runBlocking(IO) {
-                try {
-                    val apiReturn = cryptopiaRepositoty.getOpenOrders().await()
-                    val ordersLocal = async { cryptopiaRepositoty.getOpenOrdersSql() }.await() as MutableList
+            Log.i("test", "onReceive: comecando")
+            try {
+                val balancesApi = cryptopiaRepository.Fac().await().data
+                val balancesLocal = cryptopiaRepository.getBalancesLocal()
 
-                    if (apiReturn.success && apiReturn.data.size < ordersLocal.size) {
-                        ordersLocal.removeAll(apiReturn.data)
-                        ordersLocal.forEach {
-                            buildNotofication(context!!, it)
+                balancesLocal.forEach {
+                    val balanceRemote = balancesApi.first { remote -> it.currencyId == remote.currencyId }
+                    when {
+                        balanceRemote.total > it.total -> {
+                            buildNotification(
+                                context!!,
+                                "You Bought ${it.symbol} Btc: ${(balanceRemote.total - it.total).toFormattedString()}"
+                            )
                         }
+                        balanceRemote.total < it.total -> {
+                            buildNotification(
+                                context!!,
+                                "You Sold ${it.symbol} Btc: ${(it.total - balanceRemote.total).toFormattedString()}"
+                            )
+                        }
+                        else -> Log.i(
+                            it.symbol,
+                            "onReceive: remote (${balanceRemote.total.toFormattedString()}) == local (${it.total.toFormattedString()}) "
+                        )
                     }
-                    cryptopiaRepositoty.saveOrders(apiReturn.data)
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
+
+                cryptopiaRepository.insertBalancesLocal(balancesApi)
+            } catch (e: Exception) {
+                Log.i("test", "onReceive: error: ${e.message}")
+                e.printStackTrace()
+            }
         }
     }
 
-    private fun buildNotofication(context: Context, order: OpenOrder) {
+    private fun buildNotification(context: Context, text: String) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -53,7 +72,7 @@ class OpenTradersWork : BroadcastReceiver(), KoinComponent {
             val CHANNEL_ID = "my_channel_01"
             val name = "my_channel"
             val Description = "This is my channel"
-            val importance = NotificationManager.IMPORTANCE_HIGH
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val mChannel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = Description
                 enableLights(true)
@@ -66,7 +85,7 @@ class OpenTradersWork : BroadcastReceiver(), KoinComponent {
         val builder = NotificationCompat.Builder(context, "my_channel_01")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle("ORDEM ATIVADA")
-            .setContentText(order.market)
+            .setContentText(text)
 
         val resultIntent = Intent(context, MainActivity::class.java)
         val stackBuilder = TaskStackBuilder.create(context)
@@ -76,7 +95,7 @@ class OpenTradersWork : BroadcastReceiver(), KoinComponent {
 
         builder.setContentIntent(resultPendingIntent)
 
-        notificationManager.notify(order.orderId.toInt(), builder.build())
+        notificationManager.notify(Random.nextInt(), builder.build())
 
     }
 }

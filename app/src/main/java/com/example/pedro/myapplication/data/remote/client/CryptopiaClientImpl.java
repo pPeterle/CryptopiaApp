@@ -102,7 +102,7 @@ public class CryptopiaClientImpl {
             params.addProperty("TradePairId", request.getTradePairId());
         }
         params.addProperty("Type", request.getType().getLabel());
-        params.addProperty("Rate", request.getRate());
+        params.addProperty("Rate", request.getPrice());
         params.addProperty("Amount", request.getAmount());
 
         try {

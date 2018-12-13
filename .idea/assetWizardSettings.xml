@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/app/extra/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_show_chart_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/app/extra/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_arrow_forward_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -34,7 +34,7 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_show_chart" />
+                            <entry key="outputName" value="ic_arrow_forward" />
                             <entry key="sourceFile" value="$USER_HOME$" />
                           </map>
                         </option>

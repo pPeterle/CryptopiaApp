@@ -1,6 +1,10 @@
 package com.example.pedro.myapplication.data.remote
 
+import android.content.Context
+import android.util.Log
 import com.example.pedro.myapplication.data.model.*
+import com.example.pedro.myapplication.data.remote.exceptions.ConnectivityInterceptor
+import com.example.pedro.myapplication.data.remote.exceptions.NoConnectivityException
 import com.example.pedro.myapplication.utils.ApiConstants
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
@@ -23,6 +27,9 @@ interface CryptopiaService {
     @GET("$Market/{id}")
     fun getMarket(@Path("id") tradePair: String): DeferredApi<TradePair>
 
+    @GET("$MarketOrders/{id}/50")
+    fun getMarketOrders(@Path("id") label: String): DeferredApi<MarketOrders>
+
     @GET("$MarketHistory/{market}/{hours}")
     fun getMarketHistory(@Path("market") market: String ,@Path("hours") hours: Int): DeferredApiList<MarketHistory>
 
@@ -33,33 +40,29 @@ interface CryptopiaService {
     fun getOpenOrders(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<OpenOrder>
 
     @POST(CancelTrade)
-    fun cancelTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<Unit>
+    fun cancelTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<Double>
 
     @POST(SubmitTrade)
     fun submitTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApi<Unit>
 
-
-    //TODO("testar networkInterceptor")
     companion object {
 
         const val Markets = "GetMarkets"
         const val Market = "GetMarket"
         const val MarketHistory = "GetMarketHistory"
+        const val MarketOrders = "GetMarketOrders"
         const val Balance = "GetBalance"
         const val OpenOrders = "GetOpenOrders"
         const val CancelTrade = "CancelTrade"
         const val SubmitTrade = "SubmitTrade"
 
-        fun getInstance(): CryptopiaService {
+        fun getInstance(context: Context): CryptopiaService {
             val logging = HttpLoggingInterceptor()
             logging.level = HttpLoggingInterceptor.Level.BASIC
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(logging)
-                /*.addNetworkInterceptor{
-                    Log.i("test", "networkInteceptor: erro de internet")
-                    it.proceed(it.request())
-                }*/
+                .addInterceptor(ConnectivityInterceptor(context))
                 .build()
 
             val retrofit = Retrofit.Builder()
@@ -68,6 +71,7 @@ interface CryptopiaService {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
+
             return retrofit.create(CryptopiaService::class.java)
         }
     }

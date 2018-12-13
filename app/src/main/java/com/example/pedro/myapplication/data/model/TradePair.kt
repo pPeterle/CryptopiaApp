@@ -8,6 +8,8 @@ data class TradePair(
     @SerializedName("Symbol") val symbol: String,
     @SerializedName("BaseSymbol") val baseSymbol: String,
     @SerializedName("LastPrice") val lastPrice: Double,
+    @SerializedName("Low") val low: Double,
+    @SerializedName("High") val high: Double,
     @SerializedName("Change") val change: Double,
     @SerializedName("BaseVolume") val volume: Double
 )

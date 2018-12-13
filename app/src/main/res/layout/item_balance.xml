@@ -27,16 +27,55 @@ android:background="@color/colorPrimaryDark">
         android:layout_height="wrap_content"
         android:text="0.000000643"
         android:textColor="@color/colorTextPrimary"
-        android:textStyle="bold"
-        android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/view5"/>
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView12"/>
 
-    <View android:layout_width="match_parent"
-          android:layout_height="1dp"
-          style="@style/DividerTheme"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          android:id="@+id/view5"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        style="@style/DividerTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/view5"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"/>
+
+    <TextView
+        android:text="Val :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView12"
+        app:layout_constraintEnd_toStartOf="@+id/textView_balance_total"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/colorTextSecondary"/>
+
+    <TextView
+        android:text="Btc :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView13"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView12"
+        app:layout_constraintEnd_toEndOf="@+id/textView12"
+        />
+
+    <TextView
+        android:text="0.000001"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_balance_btc"
+        app:layout_constraintStart_toEndOf="@+id/textView12"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/colorTextPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView13"/>
 </android.support.constraint.ConstraintLayout>

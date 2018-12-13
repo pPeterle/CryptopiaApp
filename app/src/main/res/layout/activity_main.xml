@@ -7,39 +7,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimaryDark"
-        tools:context=".MainActivity">
-
-    <android.support.v7.widget.Toolbar
-            android:id="@+id/main_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimaryDark"
-            app:menu="@menu/menu_home"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-                android:id="@+id/main_toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorTextPrimary"
-                android:layout_gravity="center"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:text="MARKETS"
-                tools:layout_editor_absoluteY="15dp" tools:layout_editor_absoluteX="146dp"/>
-    </android.support.v7.widget.Toolbar>
+        tools:context=".ui.activity.MainActivity">
 
     <FrameLayout
-            android:id="@+id/main_frameLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-
-            app:layout_constraintBottom_toTopOf="@+id/view"
-            app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+        android:id="@+id/main_frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 
@@ -59,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:menu="@menu/navigation"/>
+            app:menu="@menu/menu_main_bottom_navigation"/>
 
 
 </android.support.constraint.ConstraintLayout>

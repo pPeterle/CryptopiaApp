@@ -20,9 +20,7 @@ import java.security.NoSuchAlgorithmException
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-class RemoteRepository(var apiKey: String?, var secretKey: String?) {
-
-    private val cryptopiaService = CryptopiaService.getInstance()
+class RemoteRepository(var apiKey: String?, var secretKey: String?, private val cryptopiaService: CryptopiaService) {
 
     fun getMarket(label: String): DeferredApi<TradePair> {
         val (symbol, baseSymbol) = label.split("/")
@@ -49,6 +47,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?) {
         )
     }
 
+    //TODO melhorar teste keys
     fun testKeys(apiKey: String, secretKey: String): DeferredApiList<Balance> {
         val cr = CryptopiaClientImpl(apiKey, secretKey)
         val params = buildJsonObject {
@@ -66,8 +65,10 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?) {
         )
     }
 
+    fun getMarketOrders(label: String) = cryptopiaService.getMarketOrders(label)
 
-    fun removeOrder(id: Double): DeferredApiList<Unit> {
+
+    fun removeOrder(id: Double): DeferredApiList<Double> {
 
         val params = buildJsonObject {
             addProperty("Type", "Trade")
@@ -131,7 +132,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?) {
     private fun buildRequestBody(params: JsonObject) =
         RequestBody.create(MediaType.parse(ApiConstants.CONTENT_TYPE_APPLICATION_JSON), params.toString())
 
-    fun getAuthString(uri: String, postParam: JsonObject): String {
+    private fun getAuthString(uri: String, postParam: JsonObject): String {
         try {
             val nonce = System.currentTimeMillis().toString()
 

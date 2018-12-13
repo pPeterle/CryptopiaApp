@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/transparent" />
+    <stroke android:width="1dp" android:color="@android:color/white" />
+    <corners android:radius="10dp" />
 
-    <item android:state_focused="true">
+    <!--<item android:state_focused="true">
         <shape
             android:shape="rectangle">
             <solid android:color="@color/colorPrimary"/>
@@ -18,7 +21,6 @@
             <corners android:radius="5dp" />
 
         </shape>
-    </item>
+    </item>-->
 
-
-</selector>
+</shape>

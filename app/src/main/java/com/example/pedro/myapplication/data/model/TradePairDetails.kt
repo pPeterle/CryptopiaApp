@@ -1,8 +1,9 @@
 package com.example.pedro.myapplication.data.model
 
 data class TradePairDetails(
-    val lastPrice: Double,
+    val marketDetails: TradePair,
     val counterAmount: Double,
     val baseAmount: Double,
-    val marketHistory: List<MarketHistory>
+    val marketHistory: List<MarketHistory>,
+    val marketOrders: MarketOrders
 )

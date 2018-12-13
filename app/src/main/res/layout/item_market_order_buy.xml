@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="5dp"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp"
+              android:layout_margin="1dp"
+              android:background="@color/colorGreenLight">
+
+    <TextView
+        android:text="0.002564"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_marketOrderBuy_price"
+        android:textStyle="bold"
+        android:textColor="@color/colorGreen"
+        android:textSize="12sp"
+        android:gravity="start"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/textView_marketOrderBuy_value"
+        android:text="5115"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="12sp"
+        android:layout_gravity="center"/>
+
+</LinearLayout>
