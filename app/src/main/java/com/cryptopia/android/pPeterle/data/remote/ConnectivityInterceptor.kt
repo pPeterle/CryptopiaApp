@@ -1,4 +1,4 @@
-package com.cryptopia.android.pPeterle.data.remote.exceptions
+package com.cryptopia.android.pPeterle.data.remote
 
 import android.content.Context
 import okhttp3.Interceptor

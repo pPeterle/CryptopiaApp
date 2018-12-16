@@ -15,7 +15,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
-val myModule = module {
+val applicationModule = module {
 
     single {
         Room.databaseBuilder(
@@ -35,9 +35,15 @@ val myModule = module {
 
     single { CryptopiaRepository(sharedPreferences = get(), appDatabase = get(), remoteRepository = get()) }
 
+}
+
+val mapperModule = module {
     factory { OpenOrdersMapper() }
     factory { BalanceMapper() }
     factory { TradePairMapper() }
+}
+
+val viewModelModule = module {
 
     viewModel { HomeViewModel(cryptopiaRepository = get(), mapper = get()) }
     viewModel { DetailsViewModel(cryptopiaRepository = get()) }
@@ -47,4 +53,5 @@ val myModule = module {
     viewModel { DepthViewModel(repository = get()) }
     viewModel { CandleStickViewModel(repository = get()) }
     viewModel { KeysViewModel(repository = get()) }
+
 }

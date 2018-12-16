@@ -26,12 +26,10 @@ fun EditText.onTextChanged(block: (s: String) -> Unit) {
     })
 }
 
-fun Double.toFormattedString(decimal: String = "8"): String {
-    val result = String.format("%.${decimal}f", this)
+fun Double.toFormattedString(decimal: Int = 8): String {
+    val result = String.format("%.${decimal}f", this).replace(",", ".")
 
-    val string = result.replace(",", ".")
-
-    return string.take(10)
+    return result.take(10)
 }
 
 fun Double.toPercent() = String.format("%.2f %%", this)

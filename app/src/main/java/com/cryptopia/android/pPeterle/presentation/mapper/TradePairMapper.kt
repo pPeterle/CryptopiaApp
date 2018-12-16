@@ -3,6 +3,7 @@ package com.cryptopia.android.pPeterle.presentation.mapper
 import com.cryptopia.android.pPeterle.data.model.TradePair
 import com.cryptopia.android.pPeterle.presentation.model.TradePairBinding
 import com.cryptopia.android.pPeterle.utils.toFormattedString
+import com.cryptopia.android.pPeterle.utils.toPercent
 
 class TradePairMapper: Mapper<TradePair, TradePairBinding> {
     override fun fromModel(model: TradePair): TradePairBinding = with(model) {
@@ -15,7 +16,7 @@ class TradePairMapper: Mapper<TradePair, TradePairBinding> {
             low.toFormattedString(),
             high.toFormattedString(),
             change.toString(),
-            volume.toFormattedString("2")
+            volume.toFormattedString(2)
         )
     }
 

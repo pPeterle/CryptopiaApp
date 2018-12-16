@@ -22,7 +22,7 @@ class MarketOrderSellAdapter(val list: List<MarketOrder>): RecyclerView.Adapter<
         val order = list[position]
 
         with(holder.view) {
-           textView_marketOrderSell_value.text = order.volume.toFormattedString("5")
+           textView_marketOrderSell_value.text = order.volume.toFormattedString(5)
             textView_marketOrderSell_price.text = order.price.toFormattedString()
         }
     }

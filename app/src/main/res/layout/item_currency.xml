@@ -73,7 +73,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_gray"
-            android:text="@{ tradePair.change }"
+            android:text="@{tradePair.change}"
             android:textSize="18sp"
             android:textAlignment="center"
             android:textColor="@color/colorTextPrimary"

@@ -2,7 +2,6 @@ package com.cryptopia.android.pPeterle.data.remote
 
 import android.content.Context
 import com.cryptopia.android.pPeterle.data.model.*
-import com.cryptopia.android.pPeterle.data.remote.exceptions.ConnectivityInterceptor
 import com.cryptopia.android.pPeterle.utils.ApiConstants
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred

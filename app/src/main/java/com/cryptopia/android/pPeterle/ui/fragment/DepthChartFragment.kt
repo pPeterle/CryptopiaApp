@@ -13,6 +13,7 @@ import com.cryptopia.android.pPeterle.presentation.Failure
 import com.cryptopia.android.pPeterle.presentation.Success
 import com.cryptopia.android.pPeterle.presentation.ViewStateList
 import com.cryptopia.android.pPeterle.presentation.viewModel.DepthViewModel
+import com.cryptopia.android.pPeterle.utils.getColor
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineData
@@ -60,11 +61,11 @@ class DepthChartFragment : Fragment() {
             axisLeft.textColor = Color.WHITE
             axisLeft.axisMinimum = 0f
 
-            axisLeft.gridColor = resources.getColor(R.color.colorPrimary)
+            axisLeft.gridColor = getColor(R.color.colorPrimary)
             axisRight.setDrawGridLines(false)
             axisRight.setDrawLabels(false)
 
-            xAxis.gridColor = resources.getColor(R.color.colorPrimary)
+            xAxis.gridColor = getColor(R.color.colorPrimary)
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             xAxis.textColor = Color.WHITE
 

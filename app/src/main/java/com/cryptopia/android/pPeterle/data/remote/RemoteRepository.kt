@@ -5,7 +5,6 @@ import com.cryptopia.android.pPeterle.data.model.Balance
 import com.cryptopia.android.pPeterle.data.model.MarketHistory
 import com.cryptopia.android.pPeterle.data.model.OpenOrder
 import com.cryptopia.android.pPeterle.data.model.TradePair
-import com.cryptopia.android.pPeterle.data.remote.client.CryptopiaClientImpl
 import com.cryptopia.android.pPeterle.data.remote.exceptions.CryptopiaException
 import com.cryptopia.android.pPeterle.utils.ApiConstants
 import com.google.gson.JsonObject
@@ -47,20 +46,19 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
         )
     }
 
-    //TODO melhorar teste keys
     fun testKeys(apiKey: String, secretKey: String): DeferredApiList<Balance> {
-        val cr = CryptopiaClientImpl(apiKey, secretKey)
         val params = buildJsonObject {
             val currency: String? = null
             addProperty("Currency", currency)
         }
-
         val requestBody = buildRequestBody(params)
 
         return cryptopiaService.getBalance(
-            cr.getAuthString(
+            getAuthString(
                 CryptopiaService.Balance,
-                params
+                params,
+                apiKey,
+                secretKey
             ), requestBody
         )
     }
@@ -132,12 +130,17 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
     private fun buildRequestBody(params: JsonObject) =
         RequestBody.create(MediaType.parse(ApiConstants.CONTENT_TYPE_APPLICATION_JSON), params.toString())
 
-    private fun getAuthString(uri: String, postParam: JsonObject): String {
+    private fun getAuthString(
+        uri: String,
+        postParam: JsonObject,
+        apiKey: String? = this.apiKey,
+        secretKey: String? = this.secretKey
+    ): String {
         try {
             val nonce = System.currentTimeMillis().toString()
 
             val requestSignature = StringBuilder();
-            requestSignature.append(this.apiKey)
+            requestSignature.append(apiKey)
                 .append("POST")
                 .append(
                     URLEncoder.encode(
@@ -152,7 +155,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
             auth.append(ApiConstants.AUTHENTICATION_SCHEMA)
                 .append(this.apiKey)
                 .append(":")
-                .append(getHmacSha256B64String(requestSignature.toString()))
+                .append(getHmacSha256B64String(requestSignature.toString(), secretKey))
                 .append(":")
                 .append(nonce)
 
@@ -185,11 +188,11 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
     }
 
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class, UnsupportedEncodingException::class)
-    private fun getHmacSha256B64String(msg: String): String {
+    private fun getHmacSha256B64String(msg: String, secretKey: String?): String {
 
         val hmacSHA2561 = Mac.getInstance("HmacSHA256")
         val secretSpec1 = SecretKeySpec(
-            Base64.decode(this.secretKey, Base64.DEFAULT), ApiConstants.SIGN_ALGORITHM_HMAC_SHA256
+            Base64.decode(secretKey, Base64.DEFAULT), ApiConstants.SIGN_ALGORITHM_HMAC_SHA256
         )
 
         hmacSHA2561.init(secretSpec1)
