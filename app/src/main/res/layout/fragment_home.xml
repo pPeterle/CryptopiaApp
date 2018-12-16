@@ -33,10 +33,11 @@
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.571"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView4"/>
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
+            android:textSize="12sp"/>
 
         <TextView
-            android:text="Price"
+            android:text="Price/Volume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView4"
@@ -44,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            />
+            android:textSize="12sp"/>
 
         <View
             android:layout_width="0dp"
@@ -104,13 +105,12 @@
             android:textOn="24h Change"
             android:textOff="24h Change"
             android:textAllCaps="false"
-            android:drawableRight="@drawable/ic_keyboard_arrow_up"
             android:textColor="@color/colorTextSecondary"
             android:background="@color/colorPrimaryDark"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView4"/>
+            android:textSize="12sp"/>
         <!--EditText
                 android:id="@+id/home_filter"
                 android:layout_width="0dp"

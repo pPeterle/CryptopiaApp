@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+
+              android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TitleTheme"
+        android:layout_margin="10dp"
+        android:text="Cryptopia API"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This app needs the keys for access the api"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your keys are saved locally in device"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click Here"
+        android:id="@+id/text_keys_link"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/tutorial"
+        android:layout_marginTop="10dp"
+        android:adjustViewBounds="true"
+        />
+
+    <EditText
+        android:id="@+id/edit_keys_apiKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Api Key"
+        android:layout_marginHorizontal="30dp"
+        style="@style/EditTextTheme"/>
+
+    <EditText
+        android:id="@+id/edit_keys_secretKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:hint="Secret Key"
+        style="@style/EditTextTheme"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccentDark"
+        android:layout_marginTop="10dp"
+        android:text="Save"
+        android:id="@+id/button_keys"/>
+
+</LinearLayout>

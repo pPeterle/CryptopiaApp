@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -124,10 +125,10 @@
                     android:textColor="@color/colorTextSecondary"/>
 
                 <TextView
-                    android:text="@string/default_number"
+                    android:id="@+id/textView_details_higt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView_details_higt"
+                    android:text="@string/default_number"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
                     app:layout_constraintEnd_toStartOf="@+id/textView11"
                     android:layout_marginEnd="8dp"
@@ -215,7 +216,7 @@
 
             </LinearLayout>
 
-            <com.example.pedro.myapplication.ui.customView.NoSwipeableViewPager
+            <com.cryptopia.android.pPeterle.ui.customView.NoSwipeableViewPager
                 android:id="@+id/viewPager_details"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"

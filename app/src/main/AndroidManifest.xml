@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.pedro.myapplication">
+          package="com.cryptopia.android.pPeterle">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".CryptopiaApp"
+        android:name="com.cryptopia.android.pPeterle.CryptopiaApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.MainActivity">
+        <activity android:name="com.cryptopia.android.pPeterle.ui.activity.MainActivity">
         </activity>
         <activity
-            android:name=".ui.activity.DetailsActivity"
-            android:parentActivityName=".ui.activity.MainActivity"/>
-        <activity android:name=".ui.activity.StartActivity">
+            android:name="com.cryptopia.android.pPeterle.ui.activity.DetailsActivity"
+            android:parentActivityName="com.cryptopia.android.pPeterle.ui.activity.MainActivity"/>
+        <activity android:name="com.cryptopia.android.pPeterle.ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.MAIN"/>
@@ -26,10 +26,10 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".data.worker.OpenTradersWork"/>
+        <receiver android:name="com.cryptopia.android.pPeterle.data.worker.OpenTradersWork"/>
 
         <activity
-            android:name=".ui.activity.IntroActivity"
+            android:name="com.cryptopia.android.pPeterle.ui.activity.IntroActivity"
             android:label="@string/title_activity_intro"
             android:theme="@style/AppTheme">
         </activity>
