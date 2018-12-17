@@ -3,6 +3,7 @@ package com.cryptopia.android.pPeterle.ui.activity
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
@@ -10,11 +11,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
 import com.cryptopia.android.pPeterle.R
-import com.cryptopia.android.pPeterle.presentation.model.TradePairView
+import com.cryptopia.android.pPeterle.R.string.price
+import com.cryptopia.android.pPeterle.databinding.ActivityDetailsBinding
+import com.cryptopia.android.pPeterle.presentation.model.TradePairDetailsBinding
 import com.cryptopia.android.pPeterle.presentation.Failure
 import com.cryptopia.android.pPeterle.presentation.Loading
 import com.cryptopia.android.pPeterle.presentation.Success
 import com.cryptopia.android.pPeterle.presentation.ViewState
+import com.cryptopia.android.pPeterle.presentation.model.TradePairBinding
 import com.cryptopia.android.pPeterle.presentation.viewModel.DetailsViewModel
 import com.cryptopia.android.pPeterle.ui.adapter.DetailsPagerAdapter
 import com.cryptopia.android.pPeterle.ui.adapter.MarketOrderBuyAdapter
@@ -29,9 +33,10 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class DetailsActivity : AppCompatActivity() {
+
     private val mViewModel: DetailsViewModel by viewModel()
 
-    private lateinit var tradePair: String
+    private lateinit var binding: ActivityDetailsBinding
 
     companion object {
 
@@ -51,23 +56,43 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    private val orderSubmitedObserver =  Observer<ViewState<Unit>?> { state ->
+        state?.let {
+            when (it) {
+                is Loading -> trade_loading.visibility = View.VISIBLE
+                is Success -> {
+                    trade_loading.visibility = View.GONE
+                    showToast("Order Submitted")
+                }
+                is Error -> {
+                    trade_loading.visibility = View.GONE
+                    showToast(it.message!!)
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_details)
-        tradePair = intent?.extras?.getString(CURRENCY_NAME)!!
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_details)
+
+        val tradePair = intent?.extras?.getString(CURRENCY_NAME)!!
 
         val bottomSheet = BottomSheetBehavior.from(nestedScroll_details)
 
         setSupportActionBar(toolbar_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        text_details_toolbarTitle.text = tradePair
 
-        setupViewPager()
+        val (symbol, baseSymbol) = tradePair.split("/")
 
-        setupHint()
+        binding.symbol = symbol
+        binding.baseSymbol = baseSymbol
+        binding.executePendingBindings()
 
-        setupViewModel()
+        setupViewPager(tradePair)
+
+        setupViewModel(tradePair)
 
         details_price_et.onTextChanged(textChanged)
         details_amount_et.onTextChanged(textChanged)
@@ -85,62 +110,26 @@ class DetailsActivity : AppCompatActivity() {
             details_amount_et.setText(details_counter_amount_tv.text)
         }
 
-        details_btn_25.setOnClickListener {
-            updateTotal(0.25)
-        }
+        details_btn_25.setOnClickListener { updateTotal(0.25) }
 
-        details_btn_50.setOnClickListener {
-            updateTotal(0.5)
-        }
+        details_btn_50.setOnClickListener { updateTotal(0.5) }
 
-        details_btn_75.setOnClickListener {
-            updateTotal(0.75)
-        }
+        details_btn_75.setOnClickListener { updateTotal(0.75) }
 
-        details_btn_100.setOnClickListener {
-            updateTotal(1.0)
-        }
+        details_btn_100.setOnClickListener { updateTotal(1.0) }
 
         details_buy_btn.setOnClickListener {
             mViewModel.setBuyOrder(
                 details_amount_et.text.toString(),
                 details_price_et.text.toString()
-            ).observe(this, Observer { state ->
-                state?.let {
-                    when (it) {
-                        is Loading -> trade_loading.visibility = View.VISIBLE
-                        is Success -> {
-                            trade_loading.visibility = View.GONE
-                            showToast("Order Submitted")
-                        }
-                        is Error -> {
-                            trade_loading.visibility = View.GONE
-                            showToast(it.message!!)
-                        }
-                    }
-                }
-            })
+            ).observe(this, orderSubmitedObserver)
         }
 
         details_sell_btn.setOnClickListener {
             mViewModel.setSellOrder(
                 details_amount_et.text.toString(),
                 details_price_et.text.toString()
-            ).observe(this, Observer {
-                it?.let {
-                    when (it) {
-                        is Loading -> trade_loading.visibility = View.VISIBLE
-                        is Success -> {
-                            trade_loading.visibility = View.GONE
-                            showToast("Order Submitted")
-                        }
-                        is Error -> {
-                            trade_loading.visibility = View.GONE
-                            showToast(it.message!!)
-                        }
-                    }
-                }
-            })
+            ).observe(this, orderSubmitedObserver)
         }
 
         btn_details_chart.setOnClickListener {
@@ -160,22 +149,20 @@ class DetailsActivity : AppCompatActivity() {
 
         bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                imageView_trade.rotation = slideOffset * 180
+                imageView_trade.rotationX = slideOffset * 180
             }
 
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-            }
-
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
         })
     }
 
-    private fun setupViewPager() {
+    private fun setupViewPager(tradePair: String) {
         viewPager_details.adapter = DetailsPagerAdapter(tradePair, supportFragmentManager)
 
     }
 
-    private fun setupViewModel() {
-        mViewModel.tradePair = this.tradePair
+    private fun setupViewModel(tradePair: String) {
+        mViewModel.tradePair = tradePair
         mViewModel.getDetails()
         mViewModel.getState().observe(this, Observer {
             it?.let {
@@ -184,38 +171,18 @@ class DetailsActivity : AppCompatActivity() {
         })
     }
 
-    private fun setupHint() {
-        val (symbol, baseSymbol) = tradePair.split("/")
-        details_counter_tv.text = baseSymbol
-        details_base_tv.text = symbol
-
-        details_amount_et.hint = String.format(resources.getString(R.string.amount), symbol)
-        details_total_et.hint = String.format(resources.getString(R.string.total), baseSymbol)
-        details_price_et.hint = String.format(resources.getString(R.string.price), baseSymbol)
-    }
-
-    private fun handleState(viewState: ViewState<TradePairView>) {
+    private fun handleState(viewState: ViewState<TradePairDetailsBinding>) {
         when (viewState) {
-            is Success<TradePairView> -> handleSuccess(viewState.data)
+            is Success<TradePairDetailsBinding> -> handleSuccess(viewState.data)
             is Failure -> handleError(viewState.error)
             is Loading -> handleLoading()
         }
     }
 
-    private fun handleSuccess(data: TradePairView) {
+    private fun handleSuccess(data: TradePairDetailsBinding) {
         details_loading.visibility = View.GONE
+        binding.tradePairDetails = data
 
-        with(data.marketDetails) {
-
-            textView_details_low.text = high.toFormattedString()
-            textView_details_higt.text = low.toFormattedString()
-            textView_details_volume.text = volume.toFormattedString()
-            textview_details_lastPrice.text = resources.getString(R.string.bitcoinPrice, lastPrice.toFormattedString())
-            details_price_et.setText(lastPrice.toFormattedString())
-        }
-
-        details_base_amount_tv.text = data.baseAmount.toFormattedString()
-        details_counter_amount_tv.text = data.counterAmount.toFormattedString()
 
         val marketOrdersSellAdapter = MarketOrderSellAdapter(data.marketOrders.sellOrders.take(15))
         val marketOrdersBuyAdapter = MarketOrderBuyAdapter(data.marketOrders.buyOrders.take(15))
@@ -232,7 +199,7 @@ class DetailsActivity : AppCompatActivity() {
 
         marketOrdersSellAdapter.notifyDataSetChanged()
         marketOrdersBuyAdapter.notifyDataSetChanged()
-
+        binding.executePendingBindings()
     }
 
 

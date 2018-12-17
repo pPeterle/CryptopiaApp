@@ -46,7 +46,7 @@ val mapperModule = module {
 val viewModelModule = module {
 
     viewModel { HomeViewModel(cryptopiaRepository = get(), mapper = get()) }
-    viewModel { DetailsViewModel(cryptopiaRepository = get()) }
+    viewModel { DetailsViewModel(cryptopiaRepository = get(), tradePairMapper = get()) }
     viewModel { OrdersViewModel(cryptopiaRepository = get(), mapper = get()) }
     viewModel { StartViewModel(cryptopiaRepository = get()) }
     viewModel { BalanceViewModel(repository = get(), mapper = get()) }

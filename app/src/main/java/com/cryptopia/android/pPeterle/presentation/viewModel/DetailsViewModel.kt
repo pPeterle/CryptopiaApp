@@ -3,14 +3,16 @@ package com.cryptopia.android.pPeterle.presentation.viewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.cryptopia.android.pPeterle.data.CryptopiaRepository
-import com.cryptopia.android.pPeterle.presentation.model.TradePairView
+import com.cryptopia.android.pPeterle.presentation.model.TradePairDetailsBinding
 import com.cryptopia.android.pPeterle.data.remote.exceptions.CryptopiaException
 import com.cryptopia.android.pPeterle.presentation.*
+import com.cryptopia.android.pPeterle.presentation.mapper.TradePairMapper
 import com.cryptopia.android.pPeterle.utils.toFormattedString
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class DetailsViewModel(private val cryptopiaRepository: CryptopiaRepository) : BaseViewModel<TradePairView>() {
+class DetailsViewModel(private val cryptopiaRepository: CryptopiaRepository, private val tradePairMapper: TradePairMapper) : BaseViewModel<TradePairDetailsBinding>() {
 
 
     lateinit var tradePair: String
@@ -97,18 +99,18 @@ class DetailsViewModel(private val cryptopiaRepository: CryptopiaRepository) : B
                 val (symbol, baseSymbol) = tradePair.split("/")
 
 
-                val balance = cryptopiaRepository.getBalanceAvaible(symbol)
-                val balanceBase = cryptopiaRepository.getBalanceAvaible(baseSymbol)
-                val marketDetails = cryptopiaRepository.getMarket(tradePair)
-                val marketOrders = cryptopiaRepository.getMarketOrders(symbol + "_" + baseSymbol)
+                val balance = async { cryptopiaRepository.getBalanceAvaible(symbol) }
+                val balanceBase = async { cryptopiaRepository.getBalanceAvaible(baseSymbol) }
+                val tradePair =  async { cryptopiaRepository.getMarket(tradePair) }
+                val marketOrders = async { cryptopiaRepository.getMarketOrders(symbol + "_" + baseSymbol) }
 
                 state.postValue(
                     Success(
-                        TradePairView(
-                            marketDetails,
-                            balance,
-                            balanceBase,
-                            marketOrders
+                        TradePairDetailsBinding(
+                            tradePairMapper.fromModel(tradePair.await()),
+                            balance.await().toFormattedString(),
+                            balanceBase.await().toFormattedString(),
+                            marketOrders.await()
                         )
                     )
                 )

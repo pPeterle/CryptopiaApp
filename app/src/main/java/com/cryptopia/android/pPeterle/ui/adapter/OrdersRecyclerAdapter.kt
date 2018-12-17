@@ -35,12 +35,6 @@ class OrdersRecyclerAdapter(var list: List<OpenOrderBinding>, val onItemClick: (
 
                 openOrder = order
 
-                if (order.type == "Buy") {
-                    orderContainer.setBackgroundResource(R.drawable.order_bid)
-                } else {
-                    orderContainer.setBackgroundResource(R.drawable.order_ask)
-                }
-
                 orderAnimation.frame = orderAnimation.maxFrame.toInt() - 30
                 orderAnimation.setOnClickListener {
                     orderAnimation.speed = -1f
