@@ -1,12 +1,10 @@
 # CryptopiaApp
 
-> An Android companion for [Cryptopia](https://www.cryptopia.co.nz), written in Kotlin 
+> An Android application for [Cryptopia](https://www.cryptopia.co.nz), written in Kotlin 
 
 ## Overview
 
 This application has the purpose of helping people to use the cryptopia market and its resources.
-
-## 
 
 ## TODO
 
