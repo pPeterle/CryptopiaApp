@@ -26,7 +26,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
         return cryptopiaService.getMarket("${symbol}_${baseSymbol}")
     }
 
-    fun getBtcMarket() = cryptopiaService.getBtcMarkets()
+    fun getCurrencies(market: String) = cryptopiaService.getCurrencies(market)
 
     fun getOpenOrders(): DeferredApiList<OpenOrder> {
 

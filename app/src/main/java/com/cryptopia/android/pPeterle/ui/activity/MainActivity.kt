@@ -12,6 +12,7 @@ import com.cryptopia.android.pPeterle.R
 import com.cryptopia.android.pPeterle.data.worker.OpenTradersWork
 import com.cryptopia.android.pPeterle.ui.fragment.BalanceFragment
 import com.cryptopia.android.pPeterle.ui.fragment.HomeFragment
+import com.cryptopia.android.pPeterle.ui.fragment.MarketFragment
 import com.cryptopia.android.pPeterle.ui.fragment.OrdersFragment
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions

@@ -18,8 +18,8 @@ typealias DeferredApi<T> = Deferred<ApiReturn<T>>
 
 interface CryptopiaService {
 
-    @GET("$Markets/BTC")
-    fun getBtcMarkets(): DeferredApiList<TradePair>
+    @GET("$Markets/{market}")
+    fun getCurrencies(@Path("market") market: String): DeferredApiList<TradePair>
 
     @GET("$Market/{id}")
     fun getMarket(@Path("id") tradePair: String): DeferredApi<TradePair>
@@ -28,19 +28,24 @@ interface CryptopiaService {
     fun getMarketOrders(@Path("id") label: String): DeferredApi<MarketOrders>
 
     @GET("$MarketHistory/{market}/{hours}")
-    fun getMarketHistory(@Path("market") market: String ,@Path("hours") hours: Int): DeferredApiList<MarketHistory>
+    fun getMarketHistory(@Path("market") market: String,
+                         @Path("hours") hours: Int): DeferredApiList<MarketHistory>
 
     @POST(Balance)
-    fun getBalance(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<Balance>
+    fun getBalance(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
+                   @Body json: RequestBody): DeferredApiList<Balance>
 
     @POST(OpenOrders)
-    fun getOpenOrders(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<OpenOrder>
+    fun getOpenOrders(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
+                      @Body json: RequestBody): DeferredApiList<OpenOrder>
 
     @POST(CancelTrade)
-    fun cancelTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApiList<Double>
+    fun cancelTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
+                    @Body json: RequestBody): DeferredApiList<Double>
 
     @POST(SubmitTrade)
-    fun submitTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String, @Body json: RequestBody): DeferredApi<Unit>
+    fun submitTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
+                    @Body json: RequestBody): DeferredApi<Unit>
 
     companion object {
 

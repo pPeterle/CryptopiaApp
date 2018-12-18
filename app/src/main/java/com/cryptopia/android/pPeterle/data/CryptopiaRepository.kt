@@ -51,8 +51,8 @@ class CryptopiaRepository(private val sharedPreferences: AppPreferences, appData
     /*
     @Return tradePair of btc market
      */
-    suspend fun getBtcMarket() = getApiReturnData {
-        remoteRepository.getBtcMarket()
+    suspend fun getCurrencies(market: String) = getApiReturnData {
+        remoteRepository.getCurrencies(market)
     }
 
     /*

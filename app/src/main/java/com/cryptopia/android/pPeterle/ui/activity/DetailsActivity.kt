@@ -11,16 +11,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
 import com.cryptopia.android.pPeterle.R
-import com.cryptopia.android.pPeterle.R.string.price
 import com.cryptopia.android.pPeterle.databinding.ActivityDetailsBinding
 import com.cryptopia.android.pPeterle.presentation.model.TradePairDetailsBinding
 import com.cryptopia.android.pPeterle.presentation.Failure
 import com.cryptopia.android.pPeterle.presentation.Loading
 import com.cryptopia.android.pPeterle.presentation.Success
 import com.cryptopia.android.pPeterle.presentation.ViewState
-import com.cryptopia.android.pPeterle.presentation.model.TradePairBinding
 import com.cryptopia.android.pPeterle.presentation.viewModel.DetailsViewModel
-import com.cryptopia.android.pPeterle.ui.adapter.DetailsPagerAdapter
+import com.cryptopia.android.pPeterle.ui.adapter.DetailsPageAdapter
 import com.cryptopia.android.pPeterle.ui.adapter.MarketOrderBuyAdapter
 import com.cryptopia.android.pPeterle.ui.adapter.MarketOrderSellAdapter
 import com.cryptopia.android.pPeterle.utils.onTextChanged
@@ -157,7 +155,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun setupViewPager(tradePair: String) {
-        viewPager_details.adapter = DetailsPagerAdapter(tradePair, supportFragmentManager)
+        viewPager_details.adapter = DetailsPageAdapter(tradePair, supportFragmentManager)
 
     }
 

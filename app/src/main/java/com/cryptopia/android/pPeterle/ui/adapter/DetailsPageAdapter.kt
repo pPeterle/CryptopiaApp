@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentPagerAdapter
 import com.cryptopia.android.pPeterle.ui.fragment.CandleStickChartFragment
 import com.cryptopia.android.pPeterle.ui.fragment.DepthChartFragment
 
-class DetailsPagerAdapter(private val label: String,
-                          fragmentManager: FragmentManager)
+class DetailsPageAdapter(private val label: String,
+                         fragmentManager: FragmentManager)
     : FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int) = when (position) {
