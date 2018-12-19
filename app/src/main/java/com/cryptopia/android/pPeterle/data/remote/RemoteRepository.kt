@@ -105,7 +105,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
 
     fun getMarketHistory(label: String, hours: Int): DeferredApiList<MarketHistory> {
         val (symbol, baseSymbol) = label.split("/")
-        return cryptopiaService.getMarketHistory("${symbol}_${baseSymbol}", hours)
+        return cryptopiaService.getMarketHistory("${symbol}_$baseSymbol", hours)
     }
 
     fun submitTrade(label: String, type: String, price: String, amount: String): DeferredApi<Unit> {
@@ -153,7 +153,7 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
 
             val auth = StringBuilder()
             auth.append(ApiConstants.AUTHENTICATION_SCHEMA)
-                .append(this.apiKey)
+                .append(apiKey)
                 .append(":")
                 .append(getHmacSha256B64String(requestSignature.toString(), secretKey))
                 .append(":")

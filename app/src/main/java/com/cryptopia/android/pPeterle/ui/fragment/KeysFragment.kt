@@ -7,11 +7,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cryptopia.android.pPeterle.R
 import com.cryptopia.android.pPeterle.presentation.Failure
+import com.cryptopia.android.pPeterle.presentation.Loading
 import com.cryptopia.android.pPeterle.presentation.Success
 import com.cryptopia.android.pPeterle.presentation.viewModel.KeysViewModel
 import com.cryptopia.android.pPeterle.ui.activity.MainActivity
@@ -46,7 +48,9 @@ class KeysFragment: Fragment() {
                     }
                     is Failure -> {
                         AlertDialog.Builder(context!!).setTitle("Error").setMessage(it.error.message).create().show()
+                        Log.i("test", "onCreateView: ${it.error}")
                     }
+                    is Loading -> {}
                 }
             }
         })

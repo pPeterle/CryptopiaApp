@@ -1,5 +1,6 @@
 package com.cryptopia.android.pPeterle.data
 
+import android.provider.Contacts
 import com.cryptopia.android.pPeterle.data.local.AppDatabase
 import com.cryptopia.android.pPeterle.data.local.AppPreferences
 import com.cryptopia.android.pPeterle.data.model.Balance
@@ -9,6 +10,7 @@ import com.cryptopia.android.pPeterle.data.remote.DeferredApiList
 import com.cryptopia.android.pPeterle.data.remote.RemoteRepository
 import com.cryptopia.android.pPeterle.data.remote.exceptions.CryptopiaException
 import com.cryptopia.android.pPeterle.data.remote.exceptions.NoConnectivityException
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -72,14 +74,13 @@ class CryptopiaRepository(private val sharedPreferences: AppPreferences, appData
 
     fun getOpenOrdersLocal() = openOrdersDao.getAllOrders()
 
-    suspend fun insertOrdersLocal(orders: List<OpenOrder>) {
-        coroutineScope {
-            launch {
+    suspend fun insertOrdersLocal(orders: List<OpenOrder>) = coroutineScope<Unit> {
+            launch(IO) {
                 openOrdersDao.removeAllOrders()
                 openOrdersDao.insertOrders(orders)
             }
         }
-    }
+
 
 
     /*
@@ -117,10 +118,14 @@ class CryptopiaRepository(private val sharedPreferences: AppPreferences, appData
 
     fun getBalancesLocal() = balancesDao.getAllBalances()
 
-    fun insertBalancesLocal(balances: List<Balance>) {
-        balancesDao.removeAllBalances()
-        balancesDao.insertBalance(balances)
-    }
+    suspend fun insertBalancesLocal(balances: List<Balance>) = coroutineScope<Unit> {
+            launch(IO) {
+                balancesDao.removeAllBalances()
+                balancesDao.insertBalance(balances)
+            }
+        }
+
+
 
     /*
        submit a trade

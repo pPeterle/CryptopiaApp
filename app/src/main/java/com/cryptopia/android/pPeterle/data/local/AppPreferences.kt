@@ -1,6 +1,7 @@
 package com.cryptopia.android.pPeterle.data.local
 
 import android.content.Context
+import com.orhanobut.hawk.Hawk
 
 class AppPreferences(context: Context) {
 
@@ -10,13 +11,25 @@ class AppPreferences(context: Context) {
 
     private val prefs = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
 
+    init {
+        prefs.edit().clear().apply()
+        Hawk.init(context).build()
+    }
+
     var secretKey: String?
-    get() = prefs.getString(SECRET_API_KEY, null)
-    set(value) = prefs.edit().putString(SECRET_API_KEY, value).apply()
+    get()  {
+        return if (Hawk.contains(SECRET_API_KEY)) null
+        else Hawk.get(SECRET_API_KEY)
+
+    }
+    set(value) { Hawk.put(SECRET_API_KEY, value) }
 
     var apiKey: String?
-    get() = prefs.getString(API_KEY, null)
-    set(value) = prefs.edit().putString(API_KEY, value).apply()
+    get() {
+        return if (Hawk.contains(API_KEY)) null
+        else Hawk.get(API_KEY)
+    }
+    set(value) { Hawk.put(API_KEY, value) }
 
     /*private inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) -> Unit) {
         val editor = edit()
