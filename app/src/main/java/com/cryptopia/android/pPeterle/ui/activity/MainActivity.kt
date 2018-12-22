@@ -7,7 +7,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.cryptopia.android.pPeterle.R
 import com.cryptopia.android.pPeterle.data.worker.OpenTradersWork
 import com.cryptopia.android.pPeterle.ui.fragment.BalanceFragment
@@ -18,41 +20,55 @@ import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), FragNavController.RootFragmentListener {
+class MainActivity : AppCompatActivity() {
 
-    private lateinit var navController: FragNavController
+    //private lateinit var navController: FragNavController
+
+    private val BACK_STACK_ROOT_TAG = "root_fragment"
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 1) {
+            super.onBackPressed()
+        }
+        super.onBackPressed()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navController = FragNavController.newBuilder(savedInstanceState, supportFragmentManager,
-            R.id.main_frameLayout
-        )
-            .rootFragments(mutableListOf(HomeFragment.newInstance(), OrdersFragment.newInstance(), BalanceFragment.newInstance()))
-            .defaultTransactionOptions(FragNavTransactionOptions.newBuilder().build())
-            .build()
-
         main_navigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    navController.switchTab(FragNavController.TAB1)
-                    return@setOnNavigationItemSelectedListener true
+                    setupFragment(HomeFragment.newInstance())
                 }
                 R.id.navigation_dashboard -> {
-                    navController.switchTab(FragNavController.TAB2)
-                    return@setOnNavigationItemSelectedListener true
+                    setupFragment(OrdersFragment.newInstance())
 
                 }
                 R.id.navigation_notifications -> {
-                    navController.switchTab(FragNavController.TAB3)
-                    return@setOnNavigationItemSelectedListener true
+                    setupFragment(BalanceFragment.newInstance())
                 }
+                else -> false
             }
-            false
         }
 
+        val fm = supportFragmentManager.apply { popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE) }
+
+        fm.beginTransaction()
+            .replace(R.id.main_frameLayout, HomeFragment.newInstance())
+            .addToBackStack(BACK_STACK_ROOT_TAG)
+            .commit()
+
         startAlarmManager()
+    }
+
+    private fun setupFragment(fragment: Fragment): Boolean {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frameLayout, fragment)
+            .addToBackStack(null)
+            .commit()
+        return true
     }
 
     private fun startAlarmManager() {
@@ -61,19 +77,5 @@ class MainActivity : AppCompatActivity(), FragNavController.RootFragmentListener
         val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 900000, pendinIntent)
     }
-
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        if (outState != null)
-        navController.onSaveInstanceState(outState)
-    }
-
-    override fun getRootFragment(fragmentId: Int): Fragment =
-        when (fragmentId) {
-            FragNavController.TAB1 -> HomeFragment.newInstance()
-            FragNavController.TAB2 -> OrdersFragment.newInstance()
-            FragNavController.TAB3 -> BalanceFragment.newInstance()
-            else -> throw RuntimeException("Fragment do not added")
-        }
-
+    
 }

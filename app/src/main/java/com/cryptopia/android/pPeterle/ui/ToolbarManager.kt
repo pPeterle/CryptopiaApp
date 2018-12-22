@@ -12,7 +12,7 @@ class ToolbarManager(
     private var container: View
 ) {
 
-    fun prepareToolbar() {
+    fun build() {
         if (builder.resId != FragmentToolbar.NO_TOOLBAR) {
             val fragmentToolbar = container.findViewById(builder.resId) as Toolbar
 

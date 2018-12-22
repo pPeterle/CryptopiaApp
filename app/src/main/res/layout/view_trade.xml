@@ -23,7 +23,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/blur_background">
+        android:background="@drawable/trade_background">
 
         <TextView
             android:text="Add Transaction"
@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:ems="10"
+            android:text="@{ tradePairDetails.marketDetails.lastPrice }"
             android:hint="@{ String.format(@string/price, baseSymbol) }"
             style="@style/EditTextTheme"
             app:layout_constraintEnd_toStartOf="@+id/guideline_80"

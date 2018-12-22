@@ -3,12 +3,15 @@ package com.cryptopia.android.pPeterle.ui.adapter
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.view.ViewGroup
 import com.cryptopia.android.pPeterle.ui.fragment.MarketFragment
 import java.lang.RuntimeException
 
 class HomePageApdater(fragmentManager: FragmentManager): FragmentPagerAdapter(fragmentManager) {
 
     private val titleList = listOf("BTC", "USDT", "NZDT", "LTC", "DOGE")
+
+    var currentFragment: MarketFragment? = null
 
     override fun getItem(position: Int) = when (position) {
         0 -> MarketFragment.newInstance(MarketFragment.Market.BTC)
@@ -22,4 +25,11 @@ class HomePageApdater(fragmentManager: FragmentManager): FragmentPagerAdapter(fr
     override fun getCount() = titleList.size
 
     override fun getPageTitle(position: Int) = titleList[position]
+
+    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+        if (currentFragment != `object`) {
+            currentFragment = `object` as MarketFragment
+        }
+        super.setPrimaryItem(container, position, `object`)
+    }
 }

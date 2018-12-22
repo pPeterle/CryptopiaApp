@@ -25,6 +25,10 @@ class OrdersViewModel(private val cryptopiaRepository: CryptopiaRepository, priv
         }
     }
 
+    fun getHistoryOrders() {
+
+    }
+
     fun removeOrder(id: Double) {
         tryCatch {
             launch(IO) {

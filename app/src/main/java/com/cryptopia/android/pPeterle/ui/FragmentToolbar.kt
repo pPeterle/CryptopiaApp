@@ -36,7 +36,7 @@ class FragmentToolbar(
 
         fun withMenu(@MenuRes menuId: Int) = apply { this.menuId = menuId }
 
-        fun withMenuItems(menuItems: MutableList<Int>, menuClicks: MutableList<MenuItem.OnMenuItemClickListener>) =
+        fun withMenuItems(menuItems: List<Int>, menuClicks: List<MenuItem.OnMenuItemClickListener>) =
             apply {
                 this.menuItems.addAll(menuItems)
                 this.menuClicks.addAll(menuClicks)

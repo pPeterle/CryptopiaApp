@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.cryptopia.android.pPeterle.R
-import com.cryptopia.android.pPeterle.data.model.Balance
 import com.cryptopia.android.pPeterle.presentation.Failure
 import com.cryptopia.android.pPeterle.presentation.Loading
 import com.cryptopia.android.pPeterle.presentation.Success
@@ -40,13 +39,12 @@ class BalanceFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_balance, container, false)
 
-        ToolbarManager(fragmentToolbarBuilder(), view).prepareToolbar()
+        ToolbarManager(fragmentToolbarBuilder(), view).build()
 
         view.recyclerView_balance.apply {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
-
         return view
     }
 
@@ -91,6 +89,11 @@ class BalanceFragment : Fragment() {
         mAdapter.notifyDataSetChanged()
         val sum = data.sumByDouble { it.btcValue.toDouble() }
         textView_balance_btcTotal.text = String.format(resources.getString(R.string.bitcoinPrice), sum.toFormattedString() )
+    }
+
+    override fun onDestroyView() {
+        recyclerView_balance.adapter = null
+        super.onDestroyView()
     }
 
 }

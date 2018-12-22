@@ -32,66 +32,94 @@
             android:id="@+id/view4"/>
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark">
-
-            <TextView
-                android:text="CurrencyPair"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView"
-                android:textColor="@color/colorTextSecondary"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintHorizontal_chainStyle="spread"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
-                android:textSize="12sp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"/>
-
-            <TextView
-                android:text="Price/Volume"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView4"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline3"
-                android:layout_marginStart="16dp"
-                app:layout_constraintStart_toStartOf="@+id/guideline4"/>
+                android:minHeight="24dp"
+                android:background="@color/colorPrimaryDark">
 
             <ToggleButton
-                android:id="@+id/market_chng_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:textOn="24h Change"
-                android:textOff="24h Change"
-                android:textAllCaps="false"
-                android:textColor="@color/colorTextSecondary"
-                android:background="@color/colorPrimaryDark"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
-                app:layout_constraintStart_toStartOf="@+id/guideline3"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textSize="12sp"/>
+                    android:textOn="TradePair"
+                    android:textOff="TradePair"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryDark"
+                    android:textAllCaps="false"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:textColor="@color/colorTextSecondary"
+                    android:id="@+id/text_home_tradePair"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/text_home_price"/>
+
+            <ToggleButton
+                    android:textOn="Price"
+                    android:textOff="Price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="13dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:id="@+id/text_home_price"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textSize="12sp"
+                    android:textAllCaps="false"
+                    app:layout_constraintStart_toEndOf="@+id/guideline4"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toStartOf="@+id/text_home_volume"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/text_home_volume"/>
+
+            <ToggleButton
+                    android:textOn="/Volume"
+                    android:textOff="/Volume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryDark"
+                    android:id="@+id/text_home_volume"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textSize="12sp"
+                    android:textAllCaps="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintStart_toEndOf="@+id/text_home_price"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline3" app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp"/>
+
+            <ToggleButton
+                    android:id="@+id/text_home_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:textOn="24h Change"
+                    android:textOff="24h Change"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextSecondary"
+                    android:background="@color/colorPrimaryDark"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/text_home_volume"
+                    android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="@+id/guideline3"
+                    android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"/>
 
             <android.support.constraint.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guideline3"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.7"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/guideline3"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.7"/>
 
             <android.support.constraint.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/guideline4"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.3"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/guideline4"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.3"/>
         </android.support.constraint.ConstraintLayout>
 
     </android.support.design.widget.AppBarLayout>

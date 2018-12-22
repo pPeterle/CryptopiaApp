@@ -97,6 +97,7 @@ class DepthChartFragment : Fragment() {
 
         val lineData = LineData(data).apply {
             setDrawValues(false)
+            isHighlightEnabled = false
         }
         lineChart.data = lineData
         lineChart.invalidate()

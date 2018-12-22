@@ -32,20 +32,26 @@ class BalanceViewModel(private val repository: CryptopiaRepository, private val 
         }
     }
 
-    //TODO tornar o metodo generico nao somente para BTC
     private suspend fun getEquivalentBTC(list: List<Balance>) {
 
         val tradePair = repository.getCurrencies("BTC")
+        val usdMarket = repository.getCurrencies("USD")
 
         list.forEach { balance ->
-            if (balance.currencyId != 469.0 && balance.currencyId != 1.0) {
-                val market = tradePair.filter { it.label.contains(balance.symbol) }
-                balance.btcValue = balance.total * market.get(0).lastPrice
+
+            when (balance.currencyId) {
+                1.0 -> balance.btcValue = balance.total
+                469.0 -> {
+                    val usdTradePair = usdMarket.first { it.label.contains(balance.symbol) }
+                    balance.btcValue = balance.total * usdTradePair.lastPrice
+                }
+                else -> {
+                    val market = tradePair.first { it.label.contains(balance.symbol) }
+                    balance.btcValue = balance.total * market.lastPrice
+                }
+
             }
 
-            if (balance.currencyId == 1.0) {
-                balance.btcValue = balance.total
-            }
         }
 
     }

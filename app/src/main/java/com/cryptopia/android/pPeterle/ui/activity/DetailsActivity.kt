@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.cryptopia.android.pPeterle.R
@@ -35,6 +37,8 @@ class DetailsActivity : AppCompatActivity() {
     private val mViewModel: DetailsViewModel by viewModel()
 
     private lateinit var binding: ActivityDetailsBinding
+
+    lateinit var tradePair: String
 
     companion object {
 
@@ -72,9 +76,10 @@ class DetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_details)
 
-        val tradePair = intent?.extras?.getString(CURRENCY_NAME)!!
+        tradePair = intent?.extras?.getString(CURRENCY_NAME)!!
 
         val bottomSheet = BottomSheetBehavior.from(nestedScroll_details)
 
@@ -147,11 +152,24 @@ class DetailsActivity : AppCompatActivity() {
 
         bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                imageView_trade.rotationX = slideOffset * 180
+                imageView_trade.rotation = slideOffset * 180
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_trade_history, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> onBackPressed()
+            R.id.action_trade_history -> startActivity(TradeHistoryActivity.newInstace(this, tradePair))
+        }
+        return true
     }
 
     private fun setupViewPager(tradePair: String) {

@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="@drawable/btc_balance_bg"
+            android:background="@drawable/balance_background"
             android:padding="10dp"
             android:id="@+id/linearLayout"
             app:layout_constraintStart_toStartOf="parent"

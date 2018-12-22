@@ -1,10 +1,7 @@
 package com.cryptopia.android.pPeterle.data.remote
 
 import android.util.Base64
-import com.cryptopia.android.pPeterle.data.model.Balance
-import com.cryptopia.android.pPeterle.data.model.MarketHistory
-import com.cryptopia.android.pPeterle.data.model.OpenOrder
-import com.cryptopia.android.pPeterle.data.model.TradePair
+import com.cryptopia.android.pPeterle.data.model.*
 import com.cryptopia.android.pPeterle.data.remote.exceptions.CryptopiaException
 import com.cryptopia.android.pPeterle.utils.ApiConstants
 import com.google.gson.JsonObject
@@ -43,6 +40,21 @@ class RemoteRepository(var apiKey: String?, var secretKey: String?, private val 
                 CryptopiaService.OpenOrders,
                 params
             ), requestBody
+        )
+    }
+
+    fun getTradeHistory(label: String? = null): DeferredApiList<TradeHistory> {
+        val params = buildJsonObject {
+            addProperty("Market", label)
+        }
+        val requestBody = buildRequestBody(params)
+
+        return cryptopiaService.getTradeHistory(
+            getAuthString(
+                CryptopiaService.TradeHistory,
+                params
+            ),
+            requestBody
         )
     }
 

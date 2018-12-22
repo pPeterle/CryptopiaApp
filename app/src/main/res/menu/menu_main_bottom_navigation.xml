@@ -3,17 +3,17 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_show_chart"
+        android:icon="@drawable/ic_menu_chart"
         android:title="Market" />
 
     <item
         android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_trade"
+        android:icon="@drawable/ic_menu_trade"
         android:title="Orders" />
 
     <item
         android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_money"
+        android:icon="@drawable/ic_menu_money"
         android:title="Balances" />
 
 </menu>

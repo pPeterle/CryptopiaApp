@@ -72,6 +72,10 @@ class CryptopiaRepository(private val sharedPreferences: AppPreferences, appData
 
     }
 
+    suspend fun getTradeHistory(label: String?) = getApiReturnData {
+        remoteRepository.getTradeHistory(label)
+    }
+
     fun getOpenOrdersLocal() = openOrdersDao.getAllOrders()
 
     suspend fun insertOrdersLocal(orders: List<OpenOrder>) = coroutineScope<Unit> {
@@ -86,7 +90,6 @@ class CryptopiaRepository(private val sharedPreferences: AppPreferences, appData
     /*
      Test the secret and api keys
      */
-    //TODO("melhorar o testkeys")
     fun testKeys(apiKey: String, secretKey: String): DeferredApiList<Balance> {
         return remoteRepository.testKeys(apiKey, secretKey)
     }

@@ -8,6 +8,7 @@ import com.cryptopia.android.pPeterle.data.remote.CryptopiaService
 import com.cryptopia.android.pPeterle.data.remote.RemoteRepository
 import com.cryptopia.android.pPeterle.presentation.mapper.BalanceMapper
 import com.cryptopia.android.pPeterle.presentation.mapper.OpenOrdersMapper
+import com.cryptopia.android.pPeterle.presentation.mapper.TradeHistoryMapper
 import com.cryptopia.android.pPeterle.presentation.mapper.TradePairMapper
 import com.cryptopia.android.pPeterle.presentation.viewModel.*
 import org.koin.android.ext.koin.androidApplication
@@ -41,6 +42,7 @@ val mapperModule = module {
     factory { OpenOrdersMapper() }
     factory { BalanceMapper() }
     factory { TradePairMapper() }
+    factory { TradeHistoryMapper() }
 }
 
 val viewModelModule = module {
@@ -53,5 +55,5 @@ val viewModelModule = module {
     viewModel { DepthViewModel(repository = get()) }
     viewModel { CandleStickViewModel(repository = get()) }
     viewModel { KeysViewModel(repository = get()) }
-
+    viewModel { TradeHistoryViewModel(repository = get(), mapper = get()) }
 }

@@ -57,22 +57,12 @@ class MarketFragment : Fragment() {
             it?.let { handleState(it) }
         })
 
-        //TODO melhorar aqui
-        /*view.market_chng_tv.apply {
-            setOnClickListener {
-                if (isChecked) {
-                    mViewModel.orderList(MarketViewModel.Sort.CHANGE, false)
-                    setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_down), null)
-                } else {
-                    mViewModel.orderList(MarketViewModel.Sort.CHANGE, true)
-                    setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_up), null)
-                }
-
-                setTextColor(getColor(R.color.colorTextPrimary))
-            }
-        }*/
-
         return view
+    }
+
+    override fun onDestroyView() {
+        market_recycler.adapter = null
+        super.onDestroyView()
     }
 
    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -100,6 +90,18 @@ class MarketFragment : Fragment() {
         })
         super.onCreateOptionsMenu(menu, inflater);
 
+    }
+
+    fun filterListByText(text: String) {
+        mViewModel.filterListString(text)
+    }
+
+    fun sortList(sort: MarketViewModel.Sort) {
+        mViewModel.orderList(sort)
+    }
+
+    fun sortListDescending(sort: MarketViewModel.Sort) {
+        mViewModel.orderListDesceding(sort)
     }
 
     private fun handleState(viewState: ViewState<List<TradePairBinding>>) {

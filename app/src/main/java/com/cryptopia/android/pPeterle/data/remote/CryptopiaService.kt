@@ -39,9 +39,15 @@ interface CryptopiaService {
     fun getOpenOrders(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
                       @Body json: RequestBody): DeferredApiList<OpenOrder>
 
+    @POST(TradeHistory)
+    fun getTradeHistory(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
+                        @Body json: RequestBody): DeferredApiList<TradeHistory>
+
     @POST(CancelTrade)
-    fun cancelTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
-                    @Body json: RequestBody): DeferredApiList<Double>
+    fun cancelTrade(
+        @Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
+        @Body json: RequestBody
+    ): DeferredApiList<Double>
 
     @POST(SubmitTrade)
     fun submitTrade(@Header(ApiConstants.HEADER_AUTHORIZATION) authorization: String,
@@ -55,6 +61,7 @@ interface CryptopiaService {
         const val MarketOrders = "GetMarketOrders"
         const val Balance = "GetBalance"
         const val OpenOrders = "GetOpenOrders"
+        const val TradeHistory = "GetTradeHistory"
         const val CancelTrade = "CancelTrade"
         const val SubmitTrade = "SubmitTrade"
 
