@@ -1,11 +1,11 @@
 package com.cryptopia.android.pPeterle.presentation.viewModel
 
+import android.util.Log
 import com.cryptopia.android.pPeterle.data.CryptopiaRepository
 import com.cryptopia.android.pPeterle.data.model.Balance
 import com.cryptopia.android.pPeterle.presentation.BaseViewModel
 import com.cryptopia.android.pPeterle.presentation.Success
 import com.cryptopia.android.pPeterle.presentation.mapper.BalanceMapper
-import com.cryptopia.android.pPeterle.presentation.mapper.Mapper
 import com.cryptopia.android.pPeterle.presentation.model.BalanceBinding
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -18,8 +18,8 @@ class BalanceViewModel(private val repository: CryptopiaRepository, private val 
             launch(IO) {
 
                 val balances = repository.getAllBalances()
-
                 repository.insertBalancesLocal(balances)
+
                 val filteredList = balances.filter { it.total > 0 }
                 getEquivalentBTC(filteredList)
 
@@ -34,11 +34,10 @@ class BalanceViewModel(private val repository: CryptopiaRepository, private val 
 
     private suspend fun getEquivalentBTC(list: List<Balance>) {
 
-        val tradePair = repository.getCurrencies("BTC")
-        val usdMarket = repository.getCurrencies("USD")
+        val btcMarket = repository.getCurrencies("BTC")
+        val usdMarket = repository.getCurrencies("USDT")
 
-        list.forEach { balance ->
-
+        for (balance in list) {
             when (balance.currencyId) {
                 1.0 -> balance.btcValue = balance.total
                 469.0 -> {
@@ -46,14 +45,12 @@ class BalanceViewModel(private val repository: CryptopiaRepository, private val 
                     balance.btcValue = balance.total * usdTradePair.lastPrice
                 }
                 else -> {
-                    val market = tradePair.first { it.label.contains(balance.symbol) }
+                    val market = btcMarket.first { it.label.contains(balance.symbol) }
                     balance.btcValue = balance.total * market.lastPrice
                 }
 
             }
-
         }
-
     }
 
 

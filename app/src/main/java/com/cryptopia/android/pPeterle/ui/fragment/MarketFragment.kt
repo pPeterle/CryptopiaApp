@@ -11,8 +11,6 @@ import com.cryptopia.android.pPeterle.*
 import com.cryptopia.android.pPeterle.presentation.*
 import com.cryptopia.android.pPeterle.presentation.model.TradePairBinding
 import com.cryptopia.android.pPeterle.presentation.viewModel.MarketViewModel
-import com.cryptopia.android.pPeterle.ui.FragmentToolbar
-import com.cryptopia.android.pPeterle.ui.ToolbarManager
 import com.cryptopia.android.pPeterle.ui.activity.DetailsActivity
 import com.cryptopia.android.pPeterle.ui.adapter.MarketRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_market.*
@@ -101,7 +99,7 @@ class MarketFragment : Fragment() {
     }
 
     fun sortListDescending(sort: MarketViewModel.Sort) {
-        mViewModel.orderListDesceding(sort)
+        mViewModel.orderListDescending(sort)
     }
 
     private fun handleState(viewState: ViewState<List<TradePairBinding>>) {

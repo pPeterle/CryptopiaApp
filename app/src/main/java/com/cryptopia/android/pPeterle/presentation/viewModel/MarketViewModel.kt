@@ -54,7 +54,7 @@ class MarketViewModel(private val cryptopiaRepository: CryptopiaRepository, priv
         state.value = Success(tradePairList)
     }
 
-    fun orderListDesceding(filter: Sort) {
+    fun orderListDescending(filter: Sort) {
         when (filter) {
             Sort.NAME -> tradePairList.sortByDescending { it.label }
             Sort.CHANGE -> tradePairList.sortByDescending { it.change }

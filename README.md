@@ -10,7 +10,6 @@ This application has the purpose of helping people to use the cryptopia market a
 
 This app is not ready yet. Some Features will be added later
 
-- Add Data Binding
 - Intro Activity (just started)
 - Splash Acitivty
 - Mutiples Markets (not only BTC market)
